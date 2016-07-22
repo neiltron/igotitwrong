@@ -1,0 +1,44 @@
+// bower:scss
+// endbower
+
+body {
+  background: #fafafa;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  color: #333;
+  margin: 0;
+
+  h1 {
+    z-index: 2;
+    color: #f8f8f8;
+    font-size: 50vh;
+    line-height: 100vh;
+    margin: 0 auto;
+    padding-left: 5vw;
+    vertical-align: middle;
+    font-weight: 200;
+  }
+
+  section {
+    display: flex;
+    flex-basis: auto;
+    flex-grow: 1;
+    position: absolute;
+    top: 0;
+    z-index: -1;
+    height: 100vh;
+
+    div {
+      display: inline-block;
+      height: 100vh;
+      width: 0.048828125vw;
+      background-color: #333;
+    }
+  }
+}
+
+.browserupgrade {
+  margin: 0.2em 0;
+  background: #ccc;
+  color: #000;
+  padding: 0.2em 0;
+}
