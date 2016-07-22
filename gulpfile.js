@@ -9,6 +9,7 @@ const babelify = require('babelify');
 const buffer = require('vinyl-buffer');
 const source = require('vinyl-source-stream');
 
+
 const $ = gulpLoadPlugins();
 const reload = browserSync.reload;
 
@@ -173,6 +174,11 @@ gulp.task('wiredep', () => {
       ignorePath: /^(\.\.\/)*\.\./
     }))
     .pipe(gulp.dest('app'));
+});
+
+gulp.task('deploy', ['build'], function() {
+  return gulp.src('./dist/**/*')
+    .pipe($.ghPages());
 });
 
 gulp.task('build', ['lint', 'html', 'images', 'fonts', 'extras'], () => {

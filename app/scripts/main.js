@@ -46,7 +46,6 @@ soundcloud.resolve('https://soundcloud.com/couldever/igotitwrong', (track) => {
   document.body.addEventListener('mousemove', (e) => {
     var halfWidth = window.innerWidth / 2;
 
-    console.log(((e.pageX - halfWidth) / halfWidth + 2) / 2)
     source.mediaElement.playbackRate = ((e.pageX - halfWidth) / halfWidth + 2) / 2;
     // source.mediaElement.playbackRate -= .1;
   });
