@@ -7,7 +7,7 @@ let clientID = '8d7651d1002e11ab38b3294f6b2ffaa0',
 
 soundcloud.resolve('https://soundcloud.com/couldever/igotitwrong', (track) => {
   let audio = new Audio();
-  audio.crossOrigin = "anonymous";
+  audio.crossOrigin = 'anonymous';
   audio.src = `${track.stream_url}?client_id=${clientID}`;
 
   context = new AudioContext();
