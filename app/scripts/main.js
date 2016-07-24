@@ -1,10 +1,5 @@
-import Soundcloud from 'soundcloud-audio';
-
-
 let width = document.documentElement.clientWidth,
     height = document.documentElement.clientHeight,
-    clientID = '8d7651d1002e11ab38b3294f6b2ffaa0',
-    soundcloud = new Soundcloud(clientID),
     elements = [], source, biquadFilter, analyser,
     AudioContext = AudioContext || webkitAudioContext,
     context = new AudioContext(),
@@ -15,6 +10,8 @@ let width = document.documentElement.clientWidth,
     audio = new Audio();
 
 audio.crossOrigin = 'anonymous';
+audio.src = '/audio/gotitwrong.mp3';
+
 canvas.width = width;
 canvas.height = height;
 
@@ -33,10 +30,6 @@ if (window.devicePixelRatio > 1) {
 if (!('ontouchend' in window)) {
   startAudio();
 }
-
-soundcloud.resolve('https://soundcloud.com/couldever/igotitwrong', (track) => {
-  audio.src = `${track.stream_url}?client_id=${clientID}`;
-});
 
 var unlock = function() {
   startAudio();
@@ -58,16 +51,15 @@ function startAudio(e) {
     analyser.connect(context.destination);
 
     analyser.fftSize = 32;
+    analyser.maxDecibels = 100;
+
+    console.log(analyser)
+
     biquadFilter.type = 'bandpass';
     biquadFilter.frequency.value = filter;
     biquadFilter.Q.value = 0;
 
-    audio.addEventListener('canplay', (e) => {
-      console.log('canplay')
-      source.mediaElement.play();
-    })
-
-    audio.play();
+    source.mediaElement.play(0);
 
     var bufferLength = analyser.frequencyBinCount;
     var dataArray = new Uint8Array(bufferLength);
@@ -82,6 +74,8 @@ function startAudio(e) {
 
       var dataArray = new Uint8Array(bufferLength);
       analyser.getByteFrequencyData(dataArray);
+
+      // console.log(dataArray)
 
       for (var i = 0; i < segments; i++) {
         ctx.strokeStyle = `rgba(0, 0, 0, ${((dataArray[i] / 255) * 1000 | 0) / 1000})`;
