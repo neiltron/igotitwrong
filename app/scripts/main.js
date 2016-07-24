@@ -10,7 +10,7 @@ let width = document.documentElement.clientWidth,
     audio = new Audio();
 
 audio.crossOrigin = 'anonymous';
-audio.src = '/audio/gotitwrong.mp3';
+audio.src = 'audio/gotitwrong.mp3';
 
 canvas.width = width;
 canvas.height = height;
