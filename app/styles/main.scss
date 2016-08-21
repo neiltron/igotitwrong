@@ -6,7 +6,7 @@ html, body {
 }
 
 body {
-  background: #fafafa;
+  background: #000;
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   color: #333;
   margin: 0;
@@ -28,7 +28,7 @@ body {
     flex-grow: 1;
     position: absolute;
     top: 0;
-    z-index: -1;
+    left: 0;
     height: 100vh;
     width: 100vw;
 
@@ -39,11 +39,33 @@ body {
       background-color: #333;
     }
   }
-}
 
+  section {
+    z-index: -1;
+  }
+
+  canvas { z-index: 2000; }
+
+  video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+  }
+
+}
 .browserupgrade {
   margin: 0.2em 0;
   background: #ccc;
   color: #000;
   padding: 0.2em 0;
+}
+
+
+*::-webkit-media-controls-play-button,
+*::-webkit-media-controls-start-playback-button {
+    opacity: 0;
+    pointer-events: none;
+    width: 5px;
 }
