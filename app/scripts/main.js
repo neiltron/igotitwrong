@@ -1,8 +1,6 @@
 import Canvas from './canvas';
 import Filter from './_filter';
 
-const makeVideoPlayableInline = require('iphone-inline-video');
-
 let width = document.documentElement.clientWidth,
     height = document.documentElement.clientHeight,
     elements = [], source, biquadFilter, analyser, dataArray,
@@ -15,33 +13,24 @@ let width = document.documentElement.clientWidth,
     isMobile = ('ontouchstart' in window),
     video = document.querySelector('video');
 
-
-makeVideoPlayableInline(video, false);
 video.pause();
+video.currentTime = 0;
 
 var loadAudio = (url) => {
   var request = new XMLHttpRequest();
   request.open('GET', url, true);
   request.responseType = 'arraybuffer';
 
-  // Decode asynchronously
+  // decode asynchronously
   request.onload = function() {
     context.decodeAudioData(request.response, function(buffer) {
       audioBuffer = buffer;
-
-      if (!isMobile) {
-        startAudio();
-      }
     }, (e) => {
       console.log('audio error', e);
     });
   }
+
   request.send();
-
-
-  if (isMobile) {
-    startAudio();
-  }
 }
 
 let startAudio = (e) => {
@@ -53,7 +42,7 @@ let startAudio = (e) => {
   biquadFilter.connect(source, analyser._filter);
   analyser.connect(biquadFilter._filter, context.destination);
 
-  source.start(0);
+  setTimeout(() => { source.start(0); }, 100);
 
   var bufferLength = analyser._filter.frequencyBinCount;
   var segments = analyser._filter.fftSize / 2;
@@ -123,7 +112,11 @@ var unlock = () => {
 
   startAudio();
 
+  document.body.classList.add('videoLoaded')
+
   document.removeEventListener('touchend', unlock, true);
+  document.removeEventListener('mousedown', unlock, true);
 };
 
+document.addEventListener('mousedown', unlock, true);
 document.addEventListener('touchend', unlock, true);

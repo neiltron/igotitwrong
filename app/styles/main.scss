@@ -1,3 +1,5 @@
+@import 'keyframes';
+
 // bower:scss
 // endbower
 
@@ -7,7 +9,7 @@ html, body {
 
 body {
   background: #000;
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: Roboto Condensed, 'Helvetica Neue', Helvetica, Arial, sans-serif;
   color: #333;
   margin: 0;
 
@@ -31,20 +33,45 @@ body {
     left: 0;
     height: 100vh;
     width: 100vw;
-
-    div {
-      display: inline-block;
-      height: 100vh;
-      width: 0.048828125vw;
-      background-color: #333;
-    }
+    color: #fff;
   }
 
   section {
-    z-index: -1;
+    justify-content: space-between;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+
+    div {
+      flex: 1 0 30%;
+      display:flex;
+      align-content: center;
+
+      font-size: 6vh;
+      font-weight:100;
+      text-transform: uppercase;
+      -webkit-font-smoothing: antialiased;
+
+      span { align-self: center; }
+      &:first-child span {
+        align-self: flex-end;
+        opacity: .7;
+      }
+      &:nth-child(2) {
+        opacity: .7;
+      }
+      &:last-child span {
+        align-self: flex-start;
+
+        -webkit-animation: 1s ease-in-out 0 infinite pulse;
+        -moz-animation:    1s ease-in-out 0 infinite pulse;
+        -o-animation:      1s ease-in-out 0 infinite pulse;
+        animation:         1s ease-in-out 0 infinite pulse;
+      }
+    }
   }
 
-  canvas { z-index: 2000; }
+  canvas { z-index: -2; }
 
   video {
     position: absolute;
@@ -52,8 +79,41 @@ body {
     left: 0;
     height: 100%;
     width: 100%;
+    opacity: 0;
+
+    -webkit-transition: opacity 1s ease-in-out 1s;
+    transition: opacity 1s ease-in-out 1s;
   }
 
+  &.videoLoaded {
+    video {
+      opacity: 1;
+    }
+
+    section {
+      -webkit-animation: 1s linear 1.1s 1 disappear;
+      -moz-animation:    1s linear 1.1s 1 disappear;
+      -o-animation:      1s linear 1.1s 1 disappear;
+      animation:         1s linear 1.1s 1 disappear;
+
+      div {
+        opacity: 0;
+        transform: translateY(10px);
+
+        &:nth-child(1) {
+          transition: opacity 1s ease-in-out, transform 1.05s ease-out;
+        }
+
+        &:nth-child(2) {
+          transition: opacity .85s ease-in-out, transform .9s ease-out;
+        }
+
+        &:nth-child(3) {
+          transition: opacity .7s ease-in-out, transform .75s ease-out;
+        }
+      }
+    }
+  }
 }
 .browserupgrade {
   margin: 0.2em 0;
@@ -62,6 +122,27 @@ body {
   padding: 0.2em 0;
 }
 
+
+@include keyframes( pulse ) {
+  0% {
+    -webkit-transform: scale(1);
+    opacity: 0.7;
+  }
+  50% {
+    -webkit-transform: scale(1.005);
+    opacity: 0.8;
+  }
+  100% {
+    -webkit-transform: scale(1);
+    opacity: 0.7;
+  }
+}
+
+@include keyframes ( disappear )
+{
+    0% { display: block;  }
+    100% { display: none; }
+}
 
 *::-webkit-media-controls-play-button,
 *::-webkit-media-controls-start-playback-button {
