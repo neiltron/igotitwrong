@@ -1,5 +1,5 @@
-import Canvas from './canvas';
 import Filter from './_filter';
+import VideoTexture from './_videotexture';
 
 let width = document.documentElement.clientWidth,
     height = document.documentElement.clientHeight,
@@ -9,12 +9,14 @@ let width = document.documentElement.clientWidth,
     context = new AudioContext(),
     filter = 20000 * (1 - (width - 200) / width),
     userHasInteracted = false,
-    canvas = new Canvas,
     isMobile = ('ontouchstart' in window),
-    video = document.querySelector('video');
+    video = document.querySelector('video'),
+    videoTexture = new VideoTexture(video);
+
 
 video.pause();
 video.currentTime = 0;
+
 
 var loadAudio = (url) => {
   var request = new XMLHttpRequest();
@@ -49,18 +51,14 @@ let startAudio = (e) => {
 
   audioBuffer = new Uint8Array(bufferLength);
 
-  canvas.setLineWidth(width / segments | 0);
-
   let output = () => {
     requestAnimationFrame(output);
 
-    canvas.clear();
     analyser._filter.getByteFrequencyData(audioBuffer);
     updateVideo(source.context.currentTime);
 
-    for (var i = 0; i < segments; i++) {
-      canvas.draw(audioBuffer[i], i);
-    }
+    videoTexture.renderer.clear();
+    videoTexture.composer.render();
   }
 
   output();

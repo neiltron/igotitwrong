@@ -41,6 +41,7 @@ body {
     flex-direction: column;
     align-items: center;
     cursor: pointer;
+    z-index: 2;
 
     div {
       flex: 1 0 30%;
@@ -71,8 +72,6 @@ body {
     }
   }
 
-  canvas { z-index: -2; }
-
   video {
     position: absolute;
     top: 0;
@@ -80,6 +79,8 @@ body {
     height: 100%;
     width: 100%;
     opacity: 0;
+    display: none;
+    /*z-index: 2;*/
 
     -webkit-transition: opacity 1s ease-in-out 1s;
     transition: opacity 1s ease-in-out 1s;
