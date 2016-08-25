@@ -3,7 +3,7 @@ import VideoTexture from './_videotexture';
 
 let width = document.documentElement.clientWidth,
     height = document.documentElement.clientHeight,
-    elements = [], source, biquadFilter, analyser, dataArray,
+    elements = [], source, biquadFilter, dataArray,
     AudioContext = AudioContext || webkitAudioContext,
     audioBuffer = null,
     context = new AudioContext(),
@@ -41,20 +41,13 @@ let startAudio = (e) => {
   source = context.createBufferSource();
   source.buffer = audioBuffer;
 
-  biquadFilter.connect(source, analyser._filter);
-  analyser.connect(biquadFilter._filter, context.destination);
+  biquadFilter.connect(source, context.destination);
 
   setTimeout(() => { source.start(0); }, 100);
-
-  var bufferLength = analyser._filter.frequencyBinCount;
-  var segments = analyser._filter.fftSize / 2;
-
-  audioBuffer = new Uint8Array(bufferLength);
 
   let output = () => {
     requestAnimationFrame(output);
 
-    analyser._filter.getByteFrequencyData(audioBuffer);
     updateVideo(source.context.currentTime);
 
     videoTexture.renderer.clear();
@@ -90,11 +83,6 @@ biquadFilter = new Filter(context.createBiquadFilter(), {
   Q: {
     value: 0
   }
-});
-
-analyser = new Filter(context.createAnalyser(), {
-  fftSize: 32,
-  maxDecibels: 100
 });
 
 var updateVideo = (time) => {
