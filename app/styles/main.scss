@@ -36,12 +36,29 @@ body {
     color: #fff;
   }
 
+  div#progress {
+    height: 4px;
+    width: 100vw;
+    position: absolute;
+    bottom: 0;
+    background-color: #fff;
+    z-index: 200;
+    transform: scaleX(0);
+
+    transition: transform .25s ease-out, opacity .3s ease-in-out;
+
+    &.done {
+      opacity: 0;
+    }
+  }
+
   section {
     justify-content: space-between;
     flex-direction: column;
     align-items: center;
     cursor: pointer;
     z-index: 2;
+    opacity: 0;
 
     div {
       flex: 1 0 30%;
