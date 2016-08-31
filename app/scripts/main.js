@@ -14,8 +14,7 @@ let width = document.documentElement.clientWidth,
     videoTexture = new VideoTexture(video);
 
 
-video.pause();
-video.currentTime = 0;
+context.suspend();
 
 
 let loadAudio = (url) => {
@@ -52,6 +51,9 @@ let loadAudio = (url) => {
 
       document.querySelector('video').appendChild(source)
 
+      video.pause();
+      video.currentTime = 0;
+
       document.addEventListener('mousedown', unlock, true);
       document.addEventListener('touchend', unlock, true);
     }
@@ -68,15 +70,15 @@ let startAudio = (e) => {
 
   biquadFilter.connect(source, context.destination);
 
-  setTimeout(() => { source.start(0); }, 100);
+  context.resume();
+  source.start();
 
   let output = () => {
     requestAnimationFrame(output);
 
     updateVideo(source.context.currentTime);
 
-    videoTexture.renderer.clear();
-    videoTexture.composer.render();
+    videoTexture.render();
   }
 
   output();

@@ -1,74 +1,106 @@
-window.THREE = require('three');
-
-const EffectComposer = require('three/examples/js/postprocessing/EffectComposer');
-const RenderPass = require('three/examples/js/postprocessing/RenderPass');
-const ShaderPass = require('three/examples/js/postprocessing/ShaderPass');
-const CopyShader = require('three/examples/js/shaders/CopyShader');
-const RGBShiftShader = require('three/examples/js/shaders/RGBShiftShader');
+import PIXI from 'pixi.js';
+import debounce from 'lodash/debounce';
+var glslify = require('glslify');
 
 export default class {
   constructor (video) {
-    this.camera = new THREE.PerspectiveCamera( 40, window.innerWidth / window.innerHeight, 1, 10000 );
-    this.camera.position.z = 1000;
+    var rendererOptions = {
+      antialiasing: false,
+      transparent: false,
+      resolution: window.devicePixelRatio,
+      autoResize: true
+    };
 
-    this.scene = new THREE.Scene();
+    this.renderer = new PIXI.WebGLRenderer(window.innerWidth, window.innerHeight, rendererOptions);
+    this.stage = new PIXI.Container();
 
-    var light = new THREE.DirectionalLight( 0xffffff );
-    light.position.set( 0.5, 1, 1 ).normalize();
-    this.scene.add( light );
+    document.getElementById('renderer_container').appendChild(this.renderer.view);
 
-    this.renderer = new THREE.WebGLRenderer({ antialias: false });
-    this.renderer.setPixelRatio( window.devicePixelRatio );
-    this.renderer.setSize( window.innerWidth, window.innerHeight );
-    this.renderer.autoClear = false;
+    this.texture = new PIXI.Texture.fromVideo(video);
 
-    document.body.appendChild( this.renderer.domElement );
+    this.uniforms = {
+        iResolution: {
+          type: "2f",
+          value: {
+            x: window.innerWidth,
+            y: window.innerHeight
+          }
+        },
+        iGlobalTime: {
+          type: "1f",
+          value: 0
+        },
+        iMouse: {
+          type: "2f",
+          value: {
+            x: 0,
+            y: 0
+          }
+        }
+    };
 
-    this._setupTexture(video);
+    this.shader = new PIXI.Filter(
+        glslify('./rando.vert'),
+        glslify('./rando.frag'),
+        this.uniforms
+    );
 
-    this.geometry = new THREE.PlaneGeometry( window.innerWidth, window.innerHeight, 1, 1 );
-    this.material = new THREE.MeshLambertMaterial({ color: 0xffffff, map: this.texture });
-    this.mesh = new THREE.Mesh( this.geometry, this.material );
+    this.sprite = new PIXI.Sprite(this.texture);
 
-    this.scene.add( this.mesh );
+    this.ratio = 16 / 9;
+    this._resize();
 
-    this._setupProcessing();
+    var dims = this._dimensions();
 
-    window.addEventListener( 'resize', this._resize.bind(this), false );
-    window.addEventListener( 'mousemove', this._mousemove.bind(this), false );
-    window.addEventListener( 'touchmove', this._mousemove.bind(this), false );
-    window.addEventListener( 'touchstart', this._mousemove.bind(this), false );
+    this.sprite.width = dims.w;
+    this.sprite.height = dims.h;
+
+    console.log(this.shader)
+
+    this.sprite.filters = [this.shader];
+    this.stage.addChild(this.sprite)
+
+    window.addEventListener( 'resize', debounce( this._resize.bind(this), 150 ));
+    window.addEventListener( 'deviceOrientation', this._resize.bind(this) );
+    // window.addEventListener( 'mousemove', this._mousemove.bind(this), false );
+    // window.addEventListener( 'touchmove', this._mousemove.bind(this), false );
+    // window.addEventListener( 'touchstart', this._mousemove.bind(this), false );
   }
 
-  _setupTexture (video) {
-    this.texture = new THREE.VideoTexture( video );
-    this.texture.minFilter = THREE.LinearFilter;
-    this.texture.magFilter = THREE.LinearFilter;
-    this.texture.format = THREE.RGBFormat;
+  render() {
+    this.shader.uniforms.iGlobalTime += 0.005;
+
+    this.renderer.render(this.stage);
   }
 
-  _setupProcessing () {
-    var renderModel = new THREE.RenderPass( this.scene, this.camera );
-    this.effectCopy = new THREE.ShaderPass( THREE.RGBShiftShader );
+  _mousemove(e) {}
 
-    this.effectCopy.renderToScreen = true;
+  _dimensions() {
+    var width = window.innerWidth,
+        height = window.innerHeight;
 
-    this.composer = new THREE.EffectComposer( this.renderer );
+    if (width / height >= this.ratio) {
+      width = height * this.ratio;
+      height = height;
+    } else {
+      height = width / this.ratio;
+      width = width;
+    }
 
-    this.composer.addPass( renderModel );
-    this.composer.addPass( this.effectCopy );
+    return { w: width, h: height };
   }
 
   _resize() {
-    this.camera.aspect = window.innerWidth / window.innerHeight;
-    this.camera.updateProjectionMatrix();
+    requestAnimationFrame(() => {
 
-    this.renderer.setSize( window.innerWidth, window.innerHeight );
-    this.composer.reset();
-  }
+        console.log('resize');
 
-  _mousemove(e) {
-    this.effectCopy.uniforms.angle.value = (window.innerWidth / 2 - e.pageX) / window.innerWidth;
-    this.effectCopy.uniforms.amount.value = (window.innerWidth / 2 - e.pageX) / window.innerWidth / 50;
+        var dims = this._dimensions();
+
+        this.renderer.resize(dims.w, dims.h);
+
+        this.sprite.width = dims.w;
+        this.sprite.height = dims.h;
+    });
   }
 }

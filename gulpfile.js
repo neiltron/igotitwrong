@@ -122,7 +122,11 @@ gulp.task('serve', ['styles', 'scripts'], () => {
   ]).on('change', reload);
 
   gulp.watch('app/styles/**/*.scss', ['styles']);
-  gulp.watch('app/scripts/**/*.js', ['scripts']);
+  gulp.watch([
+    'app/scripts/**/*.js',
+    'app/scripts/**/*.frag',
+    'app/scripts/**/*.vert'
+  ], ['scripts']);
 });
 
 gulp.task('serve:dist', () => {
