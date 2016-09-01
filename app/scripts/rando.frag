@@ -21,15 +21,13 @@ vec4 rgbShift( vec2 p , vec4 shift) {
     vec2 bs = vec2(shift.z,-shift.x);
 
     float r = texture2D(uSampler, p + rs, 1.0).r;
-    float g = texture2D(uSampler, p, 1.0).r;
-    float b = texture2D(uSampler, p, 1.0).r;
+    float g = texture2D(uSampler, p, 1.0).g;
+    float b = texture2D(uSampler, p, 1.0).b;
 
     return vec4(r, g, b, 1.0);
 }
 
 vec4 vec4pow( vec4 v, float p ) {
-    // Don't touch alpha (w), we use it to choose the direction of the shift
-    // and we don't want it to go in one direction more often than the other
     return vec4(pow(v[0],p),pow(v.y,p),pow(v.z,p),v.w);
 }
 
@@ -46,6 +44,9 @@ void main()
           *vec4(AMPLITUDE,AMPLITUDE,AMPLITUDE,1.0);
 
   c += rgbShift(p, shift);
+
+
+  // vec4 color = texture2D(uSampler, vTextureCoord);
 
   gl_FragColor = c;
 }
