@@ -20,9 +20,9 @@ vec4 rgbShift( vec2 p , vec4 shift) {
     vec2 gs = vec2(shift.y,-shift.z);
     vec2 bs = vec2(shift.z,-shift.x);
 
-    float r = texture2D(uSampler, p + rs, 1.0);
-    float g = texture2D(uSampler, p + gs, 1.0);
-    float b = texture2D(uSampler, p + bs, 1.0);
+    float r = texture2D(uSampler, p + rs, 1.0).r;
+    float g = texture2D(uSampler, p, 1.0).r;
+    float b = texture2D(uSampler, p, 1.0).r;
 
     return vec4(r, g, b, 1.0);
 }
@@ -47,7 +47,5 @@ void main()
 
   c += rgbShift(p, shift);
 
-  vec4 color = texture2D(uSampler, vTextureCoord);
-
-  gl_FragColor = color / 2.0 + c / 2.0;
+  gl_FragColor = c;
 }

@@ -20,18 +20,18 @@ export default class {
 
     this.uniforms = {
         iResolution: {
-          type: "2f",
+          type: '2f',
           value: {
             x: window.innerWidth,
             y: window.innerHeight
           }
         },
         iGlobalTime: {
-          type: "1f",
+          type: '1f',
           value: 0
         },
         iMouse: {
-          type: "2f",
+          type: '2f',
           value: {
             x: 0,
             y: 0
