@@ -14,6 +14,9 @@ export default class {
     this.renderer = new PIXI.WebGLRenderer(window.innerWidth, window.innerHeight, rendererOptions);
     this.stage = new PIXI.Container();
 
+    this.increment = this.origIncrement = 0.005;
+    this.activeIncrement = 0.1;
+
     document.getElementById('renderer_container').appendChild(this.renderer.view);
 
     this.texture = new PIXI.Texture.fromVideo(video);
@@ -64,16 +67,28 @@ export default class {
     window.addEventListener( 'deviceOrientation', this._resize.bind(this) );
     // window.addEventListener( 'mousemove', this._mousemove.bind(this), false );
     // window.addEventListener( 'touchmove', this._mousemove.bind(this), false );
-    // window.addEventListener( 'touchstart', this._mousemove.bind(this), false );
+    window.addEventListener( 'mousedown',  this._mousedown.bind(this), false );
+    window.addEventListener( 'touchstart', this._mousedown.bind(this), false );
+
+    window.addEventListener( 'mouseup',  this._mouseup.bind(this), false );
+    window.addEventListener( 'touchend', this._mouseup.bind(this), false );
   }
 
   render() {
-    this.shader.uniforms.iGlobalTime += 0.005;
+    this.shader.uniforms.iGlobalTime += this.increment;
 
     this.renderer.render(this.stage);
   }
 
   _mousemove(e) {}
+
+  _mousedown(e) {
+    this.increment = this.activeIncrement;
+  }
+
+  _mouseup(e) {
+    this.increment = this.origIncrement;
+  }
 
   _dimensions() {
     var width = window.innerWidth,
