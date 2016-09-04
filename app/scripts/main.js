@@ -1,66 +1,24 @@
 import Filter from './_filter';
-import VideoTexture from './_videotexture';
+import resl from 'resl';
+import glslify from 'glslify';
+import Regl from 'regl';
+
+let regl = new Regl();
 
 let width = document.documentElement.clientWidth,
     height = document.documentElement.clientHeight,
     elements = [], source, biquadFilter, dataArray,
     AudioContext = AudioContext || webkitAudioContext,
     audioBuffer = null,
+    video,
     context = new AudioContext(),
     filter = 20000 * (1 - (width - 200) / width),
     userHasInteracted = false,
-    isMobile = ('ontouchstart' in window),
-    video = document.querySelector('video'),
-    videoTexture = new VideoTexture(video);
+    ratio = 16 / 9,
+    isMobile = ('ontouchstart' in window);
 
 
 context.suspend();
-
-
-let loadAudio = (url) => {
-  var request = new XMLHttpRequest();
-  request.open('GET', url, true);
-  request.responseType = 'arraybuffer';
-
-  // decode asynchronously
-  request.onload = function() {
-    context.decodeAudioData(request.response, function(buffer) {
-      audioBuffer = buffer;
-    }, (e) => {
-      console.log('audio error', e);
-    });
-  }
-
-  request.addEventListener('progress', (e) => {
-    var percent = e.loaded / e.total;
-
-    console.log('progress', percent);
-
-    document.getElementById('progress').style.transform = 'scaleX(' + percent + ')';
-
-    if (percent == 1) {
-      console.log('all content loaded!');
-
-      document.getElementById('progress').classList.add('done');
-      document.querySelector('section').style.opacity = 1;
-
-
-      var source = document.createElement('source');
-      source.src = 'audio/480.mp4';
-      source.type = 'video/mp4';
-
-      document.querySelector('video').appendChild(source)
-
-      video.pause();
-      video.currentTime = 0;
-
-      document.addEventListener('mousedown', unlock, true);
-      document.addEventListener('touchend', unlock, true);
-    }
-  })
-
-  request.send();
-}
 
 let startAudio = (e) => {
   if (!audioBuffer) return false;
@@ -77,8 +35,6 @@ let startAudio = (e) => {
     requestAnimationFrame(output);
 
     updateVideo(source.context.currentTime);
-
-    videoTexture.render();
   }
 
   output();
@@ -110,14 +66,10 @@ biquadFilter = new Filter(context.createBiquadFilter(), {
 });
 
 var updateVideo = (time) => {
-  var video = document.getElementById('video');
-
   if (video.readyState > 3) {
     video.currentTime = time;
   }
 };
-
-loadAudio('audio/480.mp4');
 
 var unlock = () => {
   startAudio();
@@ -127,3 +79,77 @@ var unlock = () => {
   document.removeEventListener('touchend', unlock, true);
   document.removeEventListener('mousedown', unlock, true);
 };
+
+const drawCanvas = regl({
+  frag: glslify('./rando.frag'),
+  vert: glslify('./rando.vert'),
+
+  attributes: {
+    position: [
+      -2, 0,
+      0, -2,
+      2, 2]
+  },
+
+  uniforms: {
+    texture: regl.prop('video'),
+
+    screenShape: ({width, height}) => {
+      if (width / height >= ratio) {
+        width = height * ratio;
+        height = height;
+      } else {
+        height = width / ratio;
+        width = width;
+      }
+
+      return [width, height];
+    },
+
+    time: regl.context('time')
+  },
+
+  count: 3
+})
+
+resl({
+  manifest: {
+    audio: {
+      type: 'binary',
+      src: './audio/480.mp4',
+      stream: false
+    }
+  },
+
+  onProgress: (progress, message) => {
+    document.getElementById('progress').style.transform = 'scaleX(' + progress + ')';
+  },
+
+  onDone: ({audio}) => {
+    document.getElementById('progress').style.transform = 'scaleX(1)';
+
+    context.decodeAudioData(audio, function(buffer) {
+      audioBuffer = buffer;
+    }, (e) => {
+      console.log('audio error', e);
+    });
+
+    video = document.createElement('video');
+    video.autoplay = true;
+    video.src = 'audio/480.mp4';
+    video.pause();
+
+    document.getElementById('progress').classList.add('done');
+    document.querySelector('section').style.opacity = 1;
+
+    document.addEventListener('mousedown', unlock, true);
+    document.addEventListener('touchend', unlock, true);
+
+    setTimeout(() => {
+      const texture = regl.texture(video)
+      regl.frame(() => {
+        drawCanvas({ video: texture.subimage(video) })
+      })
+    }, 500);
+  }
+})
