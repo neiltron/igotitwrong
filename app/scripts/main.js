@@ -1,78 +1,30 @@
-import Filter from './_filter';
-import resl from 'resl';
 import glslify from 'glslify';
 import Regl from 'regl';
 
-let regl = new Regl();
+import Audio from './_audio';
+import Loader from './_loader';
+
+let regl = new Regl(document.getElementById('renderer_container'));
 
 let width = document.documentElement.clientWidth,
     height = document.documentElement.clientHeight,
-    elements = [], source, biquadFilter, dataArray,
-    AudioContext = AudioContext || webkitAudioContext,
-    audioBuffer = null,
-    video,
-    context = new AudioContext(),
     filter = 20000 * (1 - (width - 200) / width),
+    video,
     userHasInteracted = false,
-    ratio = 16 / 9,
     isMobile = ('ontouchstart' in window);
 
 
-context.suspend();
-
-let startAudio = (e) => {
-  if (!audioBuffer) return false;
-
-  source = context.createBufferSource();
-  source.buffer = audioBuffer;
-
-  biquadFilter.connect(source, context.destination);
-
-  context.resume();
-  source.start();
-
-  let output = () => {
-    requestAnimationFrame(output);
-
-    updateVideo(source.context.currentTime);
-  }
-
-  output();
-
-  let updateFilter = (e) => {
-    e.preventDefault();
-
-    if (!userHasInteracted) {
-      userHasInteracted = true;
-      biquadFilter._filter.Q.value = 1;
-    }
-
-    biquadFilter._filter.frequency.value = 16000 * (1 - (width - e.pageX) / width) | 0;
-  };
-
-  document.body.addEventListener('mousemove', updateFilter);
-  document.body.addEventListener('touchmove', updateFilter);
-  document.body.addEventListener('touchstart', updateFilter);
-}
-
-biquadFilter = new Filter(context.createBiquadFilter(), {
-  type: 'bandpass',
-  frequency: {
-    value: filter,
-  },
-  Q: {
-    value: 0
-  }
-});
-
 var updateVideo = (time) => {
   if (video.readyState > 3) {
-    video.currentTime = time;
+    video.currentTime = Audio.context.currentTime;
   }
+
+  requestAnimationFrame(updateVideo);
 };
 
 var unlock = () => {
-  startAudio();
+  Audio.start();
+  requestAnimationFrame(updateVideo);
 
   document.body.classList.add('videoLoaded')
 
@@ -80,59 +32,55 @@ var unlock = () => {
   document.removeEventListener('mousedown', unlock, true);
 };
 
+var resize = () => {
+  var width = window.innerWidth,
+      height = window.innerHeight,
+      dp = window.devicePixelRatio,
+      ratio = 16 / 9,
+      canvas = document.querySelector('canvas');
+
+  if (width / height >= ratio) {
+    width = height * ratio;
+    height = height;
+  } else {
+    height = width / ratio;
+    width = width;
+  }
+
+  canvas.width = width * dp;
+  canvas.height = height * dp;
+
+  canvas.style.width = width + 'px';
+  canvas.style.height = height + 'px';
+};
+
 const drawCanvas = regl({
   frag: glslify('./rando.frag'),
   vert: glslify('./rando.vert'),
+  count: 3,
 
   attributes: {
     position: [
       -2, 0,
       0, -2,
-      2, 2]
+      2, 2
+    ]
   },
 
   uniforms: {
     texture: regl.prop('video'),
-
-    screenShape: ({width, height}) => {
-      if (width / height >= ratio) {
-        width = height * ratio;
-        height = height;
-      } else {
-        height = width / ratio;
-        width = width;
-      }
-
-      return [width, height];
-    },
-
     time: regl.context('time')
-  },
-
-  count: 3
+  }
 })
 
-resl({
-  manifest: {
-    audio: {
-      type: 'binary',
-      src: './audio/480.mp4',
-      stream: false
-    }
-  },
-
-  onProgress: (progress, message) => {
-    document.getElementById('progress').style.transform = 'scaleX(' + progress + ')';
-  },
-
-  onDone: ({audio}) => {
-    document.getElementById('progress').style.transform = 'scaleX(1)';
-
-    context.decodeAudioData(audio, function(buffer) {
-      audioBuffer = buffer;
-    }, (e) => {
-      console.log('audio error', e);
-    });
+// loader's self-calling. it calls itself.
+var loader = new Loader({
+  complete: (audioData) => {
+    Audio.context.decodeAudioData(
+      audioData,
+      (buffer) => { Audio.buffer = buffer; },
+      (error)  => { console.log('audio error', error); }
+    );
 
     video = document.createElement('video');
     video.autoplay = true;
@@ -145,6 +93,10 @@ resl({
     document.addEventListener('mousedown', unlock, true);
     document.addEventListener('touchend', unlock, true);
 
+    window.addEventListener('resize', resize, false);
+
+    resize();
+
     setTimeout(() => {
       const texture = regl.texture(video)
       regl.frame(() => {
@@ -152,4 +104,4 @@ resl({
       })
     }, 500);
   }
-})
+});

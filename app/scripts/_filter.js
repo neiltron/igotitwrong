@@ -12,7 +12,6 @@ class Filter {
 
     // this._filter.disconnect()
 
-    console.log(this._filter)
     this.input.connect(this._filter);
     this._filter.connect(this.output);
   }
