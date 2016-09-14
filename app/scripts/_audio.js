@@ -2,7 +2,9 @@ import Filter from './_filter';
 
 class Audio {
   constructor() {
-    AudioContext = AudioContext || webkitAudioContext;
+    var AudioContext = window.AudioContext
+        || window.webkitAudioContext
+        || false;
 
     this.context = new AudioContext();
     this.buffer = [];
