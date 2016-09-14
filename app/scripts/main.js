@@ -10,6 +10,7 @@ let width = document.documentElement.clientWidth,
     height = document.documentElement.clientHeight,
     filter = 20000 * (1 - (width - 200) / width),
     video,
+    canvas = document.querySelector('canvas'),
     userHasInteracted = false,
     isMobile = ('ontouchstart' in window);
 
@@ -36,8 +37,7 @@ var resize = () => {
   var width = window.innerWidth,
       height = window.innerHeight,
       dp = window.devicePixelRatio,
-      ratio = 16 / 9,
-      canvas = document.querySelector('canvas');
+      ratio = 16 / 9;
 
   if (width / height >= ratio) {
     width = height * ratio;
@@ -69,7 +69,8 @@ const drawCanvas = regl({
 
   uniforms: {
     texture: regl.prop('video'),
-    time: regl.context('time')
+    time: regl.context('time'),
+    u_resolution: [canvas.width, canvas.height]
   }
 })
 
@@ -102,6 +103,6 @@ var loader = new Loader({
       regl.frame(() => {
         drawCanvas({ video: texture.subimage(video) })
       })
-    }, 500);
+    }, 1000);
   }
 });
