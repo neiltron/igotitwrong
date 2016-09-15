@@ -6,6 +6,7 @@ precision mediump float;
 uniform sampler2D texture;
 uniform float time;
 uniform vec2 u_resolution;
+uniform float u_intensity;
 varying vec2 vTextureCoord;
 
 #pragma glslify: noise2 = require("glsl-noise/classic/3d")
@@ -36,10 +37,10 @@ void main()
 
     vec4 shift = vec4(n) * vec4(AMPLITUDE,AMPLITUDE,AMPLITUDE,1.0);
 
-    c += rgbShift(p, shift);
+    c += rgbShift(p, shift * vec4(u_intensity));
 
 
-    // vec4 color = texture2D(texture, vTextureCoord);
+    vec4 color = texture2D(texture, vec2(1.0 - vTextureCoord.x, vTextureCoord.y));
 
-    gl_FragColor = c;
+    gl_FragColor = (color * (1.0 - u_intensity)) + (c * u_intensity);
 }
