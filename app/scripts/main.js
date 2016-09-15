@@ -3,6 +3,7 @@ import Regl from 'regl';
 
 import Audio from './_audio';
 import Loader from './_loader';
+import ProgressBar from './_progressbar';
 
 let regl = new Regl(document.getElementById('renderer_container'));
 
@@ -10,8 +11,10 @@ let width = document.documentElement.clientWidth,
     height = document.documentElement.clientHeight,
     filter = 20000 * (1 - (width - 200) / width),
     video,
+    videoLength = 262,
     intensity = 0.0,
     isMouseDown = false,
+    progressBar,
     canvas = document.querySelector('canvas'),
     userHasInteracted = false,
     isMobile = ('ontouchstart' in window);
@@ -21,6 +24,8 @@ var updateVideo = (time) => {
   if (video.readyState > 3) {
     video.currentTime = Audio.context.currentTime;
   }
+
+  progressBar.update(Audio.context.currentTime / videoLength)
 
   requestAnimationFrame(updateVideo);
 };
@@ -39,6 +44,8 @@ var unlock = () => {
 
   document.addEventListener('mouseup', handleMouseUp)
   document.addEventListener('touchend', handleMouseUp);
+
+  progressBar = new ProgressBar();
 };
 
 var handleMouseDown = () => {
@@ -121,7 +128,7 @@ var loader = new Loader({
     video.src = 'audio/480.mp4';
     video.pause();
 
-    document.getElementById('progress').classList.add('done');
+    document.getElementById('load_progress').classList.add('done');
     document.querySelector('section').style.opacity = 1;
 
     document.addEventListener('mousedown', unlock, true);

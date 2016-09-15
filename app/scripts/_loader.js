@@ -2,7 +2,7 @@ import resl from 'resl';
 
 class Loader {
   constructor(opts) {
-    this.progressBar = document.getElementById('progress');
+    this.progressBar = document.getElementById('load_progress');
     this.completeCb = opts.complete;
     this.manifest = {
       audio: {
