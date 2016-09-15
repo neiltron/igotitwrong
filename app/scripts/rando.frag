@@ -30,15 +30,16 @@ vec4 vec4pow( vec4 v, float p ) {
 
 void main()
 {
-    vec2 p = vec2(1.0 - vTextureCoord.x, vTextureCoord.y);
     vec4 c = vec4(0.0,0.0,0.0,1.0);
 
-    float n = noise2(vec3(gl_FragCoord.xy * 0.001, time * SPEED));
+    if (u_intensity > 0.0) {
+        vec2 p = vec2(1.0 - vTextureCoord.x, vTextureCoord.y);
+        float n = noise2(vec3(gl_FragCoord.xy * 0.001, time * SPEED));
 
-    vec4 shift = vec4(n) * vec4(AMPLITUDE,AMPLITUDE,AMPLITUDE,1.0);
+        vec4 shift = vec4(n) * vec4(AMPLITUDE,AMPLITUDE,AMPLITUDE,1.0);
 
-    c += rgbShift(p, shift * vec4(u_intensity));
-
+        c += rgbShift(p, shift * vec4(u_intensity));
+    }
 
     vec4 color = texture2D(texture, vec2(1.0 - vTextureCoord.x, vTextureCoord.y));
 
