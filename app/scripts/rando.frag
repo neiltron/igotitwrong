@@ -30,7 +30,7 @@ vec4 vec4pow( vec4 v, float p ) {
 
 void main()
 {
-    vec4 c = vec4(0.0,0.0,0.0,1.0);
+    vec4 c = vec4(0.0, 0.0, 0.0, 1.0);
 
     if (u_intensity > 0.0) {
         vec2 p = vec2(1.0 - vTextureCoord.x, vTextureCoord.y);
