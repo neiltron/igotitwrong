@@ -2,14 +2,23 @@ import resl from 'resl';
 
 class Loader {
   constructor(opts) {
+    this._progress = this._progress.bind(this);
+
     this.progressBar = document.getElementById('load_progress');
+
     this.completeCb = opts.complete;
     this.manifest = {
-      audio: {
+      mainAudio: {
         type: 'binary',
         src: './audio/480.mp4',
         stream: false
-      }
+      },
+      stereoLeft: {
+        type: 'binary',
+        src: './audio/low_intensity.mp3',
+        stream: false
+      },
+
     };
 
     this._load();
@@ -23,10 +32,10 @@ class Loader {
     resl({
       manifest: this.manifest,
       onProgress: this._progress,
-      onDone: ({audio}) => {
+      onDone: (assets) => {
         this.progressBar.style.transform = 'scaleX(1)';
 
-        this.completeCb.call(null, audio);
+        this.completeCb.call(null, assets);
       }
     });
   }

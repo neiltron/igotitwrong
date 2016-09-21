@@ -119,12 +119,19 @@ const drawCanvas = regl({
 })
 
 // loader's self-calling. it calls itself.
+var audioError = error  => { console.log('audio error', error); };
 var loader = new Loader({
-  complete: (audioData) => {
+  complete: ({stereoLeft, mainAudio}) => {
     Audio.context.decodeAudioData(
-      audioData,
-      (buffer) => { Audio.buffer = buffer; },
-      (error)  => { console.log('audio error', error); }
+      stereoLeft,
+      buffer => { Audio.stereoMix.left = buffer; },
+      audioError
+    );
+
+    Audio.context.decodeAudioData(
+      mainAudio,
+      buffer => { Audio.buffer = buffer; },
+      audioError
     );
 
     video = document.createElement('video');
