@@ -10,12 +10,12 @@ class Loader {
     this.manifest = {
       mainAudio: {
         type: 'binary',
-        src: './audio/480.mp4',
+        src: './assets/normal_intensity.mp3',
         stream: false
       },
       stereoLeft: {
         type: 'binary',
-        src: './audio/low_intensity.mp3',
+        src: './assets/low_intensity.mp3',
         stream: false
       },
 

@@ -45,10 +45,10 @@ gulp.task('scripts', () => {
     .pipe(reload({stream: true}));
 });
 
-gulp.task('audio', () => {
-  return gulp.src('app/audio/*')
-    .pipe(gulp.dest('.tmp/audio'))
-    .pipe(gulp.dest('dist/audio'));
+gulp.task('assets', () => {
+  return gulp.src('app/assets/*')
+    .pipe(gulp.dest('.tmp/assets'))
+    .pipe(gulp.dest('dist/assets'));
 });
 
 function lint(files, options) {
@@ -178,7 +178,7 @@ gulp.task('deploy', ['build'], function() {
     .pipe($.ghPages());
 });
 
-gulp.task('build', ['lint', 'html', 'images', 'extras', 'audio'], () => {
+gulp.task('build', ['lint', 'html', 'images', 'extras', 'assets'], () => {
   return gulp.src('dist/**/*').pipe($.size({title: 'build', gzip: true}));
 });
 

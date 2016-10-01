@@ -136,7 +136,7 @@ var loader = new Loader({
 
     video = document.createElement('video');
     video.autoplay = true;
-    video.src = 'audio/480.mp4';
+    video.src = 'assets/video_mobile.mp4';
     video.pause();
 
     document.getElementById('load_progress').classList.add('done');
