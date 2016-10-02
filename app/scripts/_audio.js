@@ -60,14 +60,12 @@ class Audio {
     this.source.start();
     this.sourceLeft.start();
 
-    document.body.addEventListener('mousemove',  this.updateFilter.bind(this));
-    document.body.addEventListener('touchmove',  this.updateFilter.bind(this));
-    document.body.addEventListener('touchstart', this.updateFilter.bind(this));
+    // document.body.addEventListener('mousemove',  this.updateFilter.bind(this));
+    // document.body.addEventListener('touchmove',  this.updateFilter.bind(this));
+    // document.body.addEventListener('touchstart', this.updateFilter.bind(this));
   }
 
   updateFilter(e) {
-    e.preventDefault();
-
     if (!this.userHasInteracted) {
       this.userHasInteracted = true;
       this.biquadFilter._filter.Q.value = 1;

@@ -43,7 +43,7 @@ void main()
 
         float distance = distance(u_mousepos.xy, gl_FragCoord.xy / 2.0);
 
-        if (distance > 100.0) {
+        if (distance > 25.0) {
             opacity = 1.0 - (distance / 300.0);
         }
 

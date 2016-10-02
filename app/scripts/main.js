@@ -45,19 +45,25 @@ var unlock = () => {
   document.removeEventListener('touchend', unlock, true);
   document.removeEventListener('mousedown', unlock, true);
 
-  document.addEventListener('mousedown', handleMouseDown);
-  document.addEventListener('touchstart', handleMouseDown);
+  document.addEventListener('mousedown', handleMouseDown, true);
+  document.addEventListener('touchstart', handleMouseDown, false);
 
-  canvas.addEventListener('mousemove', handleMouseMove);
-  canvas.addEventListener('touchmove', handleMouseMove);
+  document.addEventListener('mousemove', handleMouseMove, false);
+  document.addEventListener('touchmove', handleMouseMove, true);
 
-  document.addEventListener('mouseup', handleMouseUp)
-  document.addEventListener('touchend', handleMouseUp);
+  document.addEventListener('mouseup', handleMouseUp, false)
+  document.addEventListener('touchend', handleMouseUp, false);
 
-  progressBar = new ProgressBar();
+  if (!isMobile) {
+    progressBar = new ProgressBar();
+  }
 };
 
 var handleMouseDown = (e) => {
+  e.preventDefault();
+
+  Audio.updateFilter(e);
+
   isMouseDown = true;
 
   mouseX = e.pageX - e.target.getBoundingClientRect().left;
@@ -73,7 +79,9 @@ var handleMouseUp = () => {
 };
 
 var handleMouseMove = (e) => {
-  if (!isMouseDown) { return; }
+  e.preventDefault();
+
+  Audio.updateFilter(e);
 
   mouseX = e.pageX - e.target.getBoundingClientRect().left;
   mouseY = canvas.height - (e.pageY - e.target.getBoundingClientRect().top) - canvas.height / 2;
