@@ -13,6 +13,8 @@ let width = document.documentElement.clientWidth,
     video,
     videoLength = 262,
     intensity = 0.0,
+    mouseX = 0.0,
+    mouseY = 0.0,
     isMouseDown = false,
     progressBar,
     canvas = document.querySelector('canvas'),
@@ -46,14 +48,20 @@ var unlock = () => {
   document.addEventListener('mousedown', handleMouseDown);
   document.addEventListener('touchstart', handleMouseDown);
 
+  canvas.addEventListener('mousemove', handleMouseMove);
+  canvas.addEventListener('touchmove', handleMouseMove);
+
   document.addEventListener('mouseup', handleMouseUp)
   document.addEventListener('touchend', handleMouseUp);
 
   progressBar = new ProgressBar();
 };
 
-var handleMouseDown = () => {
+var handleMouseDown = (e) => {
   isMouseDown = true;
+
+  mouseX = e.pageX - e.target.getBoundingClientRect().left;
+  mouseY = canvas.height - (e.pageY - e.target.getBoundingClientRect().top) - canvas.height / 2;
 
   requestAnimationFrame(adjustIntensity);
 };
@@ -62,6 +70,13 @@ var handleMouseUp = () => {
   isMouseDown = false;
 
   requestAnimationFrame(adjustIntensity);
+};
+
+var handleMouseMove = (e) => {
+  if (!isMouseDown) { return; }
+
+  mouseX = e.pageX - e.target.getBoundingClientRect().left;
+  mouseY = canvas.height - (e.pageY - e.target.getBoundingClientRect().top) - canvas.height / 2;
 };
 
 var adjustIntensity = () => {
@@ -114,7 +129,8 @@ const drawCanvas = regl({
     texture: regl.prop('video'),
     u_intensity: regl.prop('intensity'),
     time: regl.context('time'),
-    u_resolution: [canvas.width, canvas.height]
+    u_resolution: [canvas.width, canvas.height],
+    u_mousepos: regl.prop('mousepos')
   }
 })
 
@@ -154,7 +170,8 @@ var loader = new Loader({
       regl.frame(() => {
         drawCanvas({
           video: texture.subimage(video),
-          intensity: intensity
+          intensity: intensity,
+          mousepos: [mouseX, mouseY]
         });
       })
     }, 1000);
