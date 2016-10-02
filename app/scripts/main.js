@@ -138,7 +138,8 @@ const drawCanvas = regl({
     u_intensity: regl.prop('intensity'),
     time: regl.context('time'),
     u_resolution: [canvas.width, canvas.height],
-    u_mousepos: regl.prop('mousepos')
+    u_mousepos: regl.prop('mousepos'),
+    u_ismobile: isMobile
   }
 })
 

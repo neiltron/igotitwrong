@@ -8,9 +8,12 @@ uniform float time;
 uniform vec2 u_resolution;
 uniform float u_intensity;
 uniform vec2 u_mousepos;
+uniform bool u_ismobile;
 varying vec2 vTextureCoord;
 
 #pragma glslify: noise2 = require("glsl-noise/classic/3d")
+
+float blurDistance = 300.0;
 
 vec4 rgbShift( vec2 p , vec4 shift) {
     shift *= 2.0 * shift.w - 1.0;
@@ -36,6 +39,10 @@ void main()
     float opacity = 1.0;
 
     if (u_intensity > 0.0) {
+        if (u_ismobile == true) {
+            blurDistance = 150.0;
+        }
+
         vec2 p = vec2(vTextureCoord.x, vTextureCoord.y);
         float n = noise2(vec3(gl_FragCoord.xy * 0.001, time * SPEED));
 
@@ -43,8 +50,8 @@ void main()
 
         float distance = distance(u_mousepos.xy, gl_FragCoord.xy / 2.0);
 
-        if (distance > 25.0) {
-            opacity = 1.0 - (distance / 300.0);
+        if (distance > 50.0) {
+            opacity = 1.0 - (distance / blurDistance);
         }
 
         if (opacity > 1.0) {
