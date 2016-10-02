@@ -45,7 +45,6 @@ void main()
 
         if (distance > 100.0) {
             opacity = 1.0 - (distance / 300.0);
-            // opacity = 0.0;
         }
 
         if (opacity > 1.0) {
