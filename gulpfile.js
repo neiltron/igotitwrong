@@ -3,7 +3,6 @@ const gulp = require('gulp');
 const gulpLoadPlugins = require('gulp-load-plugins');
 const browserSync = require('browser-sync');
 const del = require('del');
-const wiredep = require('wiredep').stream;
 const browserify = require('browserify');
 const babelify = require('babelify');
 const buffer = require('vinyl-buffer');
@@ -156,21 +155,6 @@ gulp.task('serve:test', ['scripts'], () => {
   gulp.watch('app/scripts/**/*.js', ['scripts']);
   gulp.watch('test/spec/**/*.js').on('change', reload);
   gulp.watch('test/spec/**/*.js', ['lint:test']);
-});
-
-// inject bower components
-gulp.task('wiredep', () => {
-  gulp.src('app/styles/*.scss')
-    .pipe(wiredep({
-      ignorePath: /^(\.\.\/)+/
-    }))
-    .pipe(gulp.dest('app/styles'));
-
-  gulp.src('app/*.html')
-    .pipe(wiredep({
-      ignorePath: /^(\.\.\/)*\.\./
-    }))
-    .pipe(gulp.dest('app'));
 });
 
 gulp.task('deploy', ['build'], function() {
