@@ -22,10 +22,6 @@ let width = document.documentElement.clientWidth,
 
 
 var updateVideo = (time) => {
-  if (video.readyState > 3) {
-    video.currentTime = Audio.context.currentTime;
-  }
-
   progressBar.update(Audio.context.currentTime / videoLength);
 
   requestAnimationFrame(updateVideo);
@@ -34,6 +30,7 @@ var updateVideo = (time) => {
 var unlock = () => {
   Audio.start();
   requestAnimationFrame(updateVideo);
+  video.play();
 
   document.body.classList.add('videoLoaded');
 
