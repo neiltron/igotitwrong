@@ -12,6 +12,7 @@ let width = document.documentElement.clientWidth,
     filter = 20000 * (1 - (width - 200) / width),
     video,
     videoLength = 262,
+    paused = false,
     intensity = 0.0,
     mouseX = 0.0,
     mouseY = 0.0,
@@ -30,9 +31,29 @@ var getCoords = e => {
 };
 
 var updateVideo = (time) => {
-  progressBar.update(Audio.context.currentTime / videoLength);
+  progressBar.update(video.currentTime / videoLength);
 
   requestAnimationFrame(updateVideo);
+};
+
+var pause = function() {
+  if (paused) {
+    return;
+  }
+
+  paused = true;
+  Audio.pause();
+  video.pause();
+};
+
+var resume = function() {
+  if (!paused) {
+    return;
+  }
+
+  paused = false;
+  Audio.resume(video.currentTime);
+  video.play();
 };
 
 var unlock = () => {
@@ -53,6 +74,8 @@ var unlock = () => {
 
   document.addEventListener('mouseup', handleMouseUp, false)
   document.addEventListener('touchend', handleMouseUp, false);
+
+  document.addEventListener('keyup', handleKeyUp);
 
   progressBar = new ProgressBar();
 };
@@ -87,6 +110,18 @@ var handleMouseMove = (e) => {
 
   mouseX = coords.x - e.target.getBoundingClientRect().left;
   mouseY = canvas.height - (coords.y - e.target.getBoundingClientRect().top) - canvas.height / 2;
+};
+
+var handleKeyUp = e => {
+  if (e.keyCode !== 32) {
+    return;
+  }
+
+  if (paused) {
+    resume();
+  } else {
+    pause();
+  }
 };
 
 var adjustIntensity = () => {
