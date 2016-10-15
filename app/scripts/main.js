@@ -11,7 +11,7 @@ let width = document.documentElement.clientWidth,
     height = document.documentElement.clientHeight,
     filter = 20000 * (1 - (width - 200) / width),
     video,
-    videoLength = 262,
+    videoLength = 242,
     paused = false,
     intensity = 0.0,
     mouseX = 0.0,
@@ -31,7 +31,7 @@ var getCoords = e => {
 };
 
 var updateVideo = (time) => {
-  progressBar.update(video.currentTime / videoLength);
+  progressBar.update(Math.min(1, video.currentTime / videoLength));
 
   requestAnimationFrame(updateVideo);
 };
@@ -57,9 +57,21 @@ var resume = function() {
 };
 
 var unlock = () => {
+  video.addEventListener('canplay', resume);
+  video.addEventListener('playing', resume);
+  video.addEventListener('waiting', pause);
+  video.addEventListener('stalled', pause);
+
   Audio.start();
-  requestAnimationFrame(updateVideo);
   video.play();
+
+  var syncInterval = setInterval(() => Audio.sync(video.currentTime), 2000);
+  video.addEventListener('ended', () => {
+    clearInterval(syncInterval);
+    video.pause();
+  });
+
+  requestAnimationFrame(updateVideo);
 
   document.body.classList.add('videoLoaded');
 
