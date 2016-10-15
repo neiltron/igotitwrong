@@ -95,6 +95,16 @@ var unlock = () => {
 var handleMouseDown = (e) => {
   e.preventDefault();
 
+  if (isMobile) {
+    if (document.documentElement.webkitRequestFullscreen) {
+      document.documentElement.webkitRequestFullscreen();
+    }
+
+    if (screen.orientation.lock) {
+      screen.orientation.lock('landscape');
+    }
+  }
+
   var coords = getCoords(e);
 
   Audio.updateFilter(coords.x, coords.y);
