@@ -21,6 +21,14 @@ let width = document.documentElement.clientWidth,
     isMobile = ('ontouchstart' in window);
 
 
+var getCoords = e => {
+  if (e.touches && e.touches.length) {
+    return { x: e.touches[0].pageX, y: e.touches[0].pageY };
+  }
+
+  return { x: e.pageX, y: e.pageY };
+};
+
 var updateVideo = (time) => {
   progressBar.update(Audio.context.currentTime / videoLength);
 
@@ -52,12 +60,14 @@ var unlock = () => {
 var handleMouseDown = (e) => {
   e.preventDefault();
 
-  Audio.updateFilter(e);
+  var coords = getCoords(e);
+
+  Audio.updateFilter(coords.x, coords.y);
 
   isMouseDown = true;
 
-  mouseX = e.pageX - e.target.getBoundingClientRect().left;
-  mouseY = canvas.height - (e.pageY - e.target.getBoundingClientRect().top) - canvas.height / 2;
+  mouseX = coords.x - e.target.getBoundingClientRect().left;
+  mouseY = canvas.height - (coords.y - e.target.getBoundingClientRect().top) - canvas.height / 2;
 
   requestAnimationFrame(adjustIntensity);
 };
@@ -71,10 +81,12 @@ var handleMouseUp = () => {
 var handleMouseMove = (e) => {
   e.preventDefault();
 
-  Audio.updateFilter(e);
+  var coords = getCoords(e);
 
-  mouseX = e.pageX - e.target.getBoundingClientRect().left;
-  mouseY = canvas.height - (e.pageY - e.target.getBoundingClientRect().top) - canvas.height / 2;
+  Audio.updateFilter(coords.x, coords.y);
+
+  mouseX = coords.x - e.target.getBoundingClientRect().left;
+  mouseY = canvas.height - (coords.y - e.target.getBoundingClientRect().top) - canvas.height / 2;
 };
 
 var adjustIntensity = () => {

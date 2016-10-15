@@ -38,10 +38,10 @@ class Audio {
     this.sources.normal.start();
   }
 
-  updateFilter(e) {
+  updateFilter(x, y) {
     var width = window.innerWidth;
 
-    var middle = (e.pageX / (width / 2)) - 1;
+    var middle = (x / (width / 2)) - 1;
     this.gains.low.gain.value = (1 - middle) / 2;
     this.gains.normal.gain.value = (1 + middle) / 2;
   };
