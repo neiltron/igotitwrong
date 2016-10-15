@@ -12,6 +12,7 @@ class Audio {
     this.gains = { main: null, low: null, normal: null };
     this.timeOffset = 0;
     this.paused = false;
+    this.effectAmount = 0;
 
     // stop clock until we're ready
     this.context.suspend();
@@ -39,6 +40,11 @@ class Audio {
     }
   }
 
+  _updateGains() {
+    this.gains.low.gain.value = this.effectAmount;
+    this.gains.normal.gain.value = 1 - this.effectAmount;
+  }
+
   sync(time) {
     if (this.paused) {
       return;
@@ -58,6 +64,8 @@ class Audio {
     this.gains.low.connect(this.gains.main);
     this.gains.normal = this.context.createGain();
     this.gains.normal.connect(this.gains.main);
+
+    this._updateGains();
 
     this._connectSources();
 
@@ -95,11 +103,30 @@ class Audio {
 
   updateFilter(x, y) {
     var width = window.innerWidth;
+    var height = window.innerHeight;
 
-    var middle = (x / (width / 2)) - 1;
-    this.gains.low.gain.value = (1 - middle) / 2;
-    this.gains.normal.gain.value = (1 + middle) / 2;
+    var deltaX = (width / 2) - x;
+    var deltaY = (height / 2) - y;
+
+    // Make it easier hit 100% from either axis
+    if (width < height) {
+      deltaX *= (height / width);
+    } else {
+      deltaY *= (width / height);
+    }
+
+    // Distance from center determines effect amount
+    var distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+    this.effectAmount = Math.min(1, distance / Math.min(window.innerWidth, window.innerHeight));
+
+    this._updateGains();
   };
+
+  resetFilter() {
+    this.effectAmount = 0;
+    this._updateGains();
+  }
+
 }
 
 export default new Audio();

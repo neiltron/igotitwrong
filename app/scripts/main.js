@@ -119,6 +119,7 @@ var handleMouseDown = (e) => {
 
 var handleMouseUp = () => {
   isMouseDown = false;
+  Audio.resetFilter();
 
   requestAnimationFrame(adjustIntensity);
 };
@@ -128,7 +129,9 @@ var handleMouseMove = (e) => {
 
   var coords = getCoords(e);
 
-  Audio.updateFilter(coords.x, coords.y);
+  if (isMouseDown) {
+    Audio.updateFilter(coords.x, coords.y);
+  }
 
   mouseX = coords.x - e.target.getBoundingClientRect().left;
   mouseY = canvas.height - (coords.y - e.target.getBoundingClientRect().top) - canvas.height / 2;
