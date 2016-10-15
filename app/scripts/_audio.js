@@ -7,16 +7,9 @@ class Audio {
         || false;
 
     this.context = new AudioContext();
-    this.buffer = [];
-    this.stereoMix = {
-      left: [],
-      right: [],
-    };
-    this.gains = {
-      main: null,
-      left: null,
-      right: null,
-    };
+    this.sources = { low: null, normal: null };
+    this.buffers = { low: null, normal: null };
+    this.gains = { main: null, low: null, normal: null };
     this.userHasInteracted = false;
 
     var width = window.innerWidth;
@@ -36,29 +29,30 @@ class Audio {
   }
 
   start() {
-    this.source = this.context.createBufferSource();
-    this.source.buffer = this.buffer;
+    this.sources.normal = this.context.createBufferSource();
+    this.sources.normal.buffer = this.buffers.normal;
 
-    this.sourceLeft = this.context.createBufferSource();
-    this.sourceLeft.buffer = this.stereoMix.left;
+    this.sources.low = this.context.createBufferSource();
+    this.sources.low.buffer = this.buffers.low;
 
-    // filter disabled for now:
     //this.biquadFilter.connect(this.source, this.context.destination);
 
     this.gains.main = this.context.createGain();
-    this.gains.left = this.context.createGain();
-    this.gains.right = this.context.createGain();
-    this.gains.left.connect(this.gains.main);
-    this.gains.right.connect(this.gains.main);
 
-    this.sourceLeft.connect(this.gains.left);
-    this.source.connect(this.gains.right);
+    this.gains.low = this.context.createGain();
+    this.gains.low.connect(this.gains.main);
+
+    this.gains.normal = this.context.createGain();
+    this.gains.normal.connect(this.gains.main);
+
+    this.sources.low.connect(this.gains.low);
+    this.sources.normal.connect(this.gains.normal);
 
     this.gains.main.connect(this.context.destination);
 
     this.context.resume();
-    this.source.start();
-    this.sourceLeft.start();
+    this.sources.low.start();
+    this.sources.normal.start();
 
     // document.body.addEventListener('mousemove',  this.updateFilter.bind(this));
     // document.body.addEventListener('touchmove',  this.updateFilter.bind(this));
@@ -76,8 +70,8 @@ class Audio {
     this.biquadFilter._filter.frequency.value = 16000 * (1 - (width - e.pageX) / width) | 0;
 
     var middle = (e.pageX / (width / 2)) - 1;
-    this.gains.left.gain.value = (1 - middle) / 2;
-    this.gains.right.gain.value = (1 + middle) / 2;
+    this.gains.low.gain.value = (1 - middle) / 2;
+    this.gains.normal.gain.value = (1 + middle) / 2;
   };
 }
 

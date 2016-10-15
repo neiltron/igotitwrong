@@ -146,22 +146,22 @@ const drawCanvas = regl({
 // loader's self-calling. it calls itself.
 var audioError = error  => { console.log('audio error', error); };
 var loader = new Loader();
-loader.load().then(({stereoLeft, mainAudio}) => {
+loader.load().then(({lowIntensity, normalIntensity}) => {
   var tasks = [];
 
   tasks.push(new Promise((resolve, reject) => Audio.context.decodeAudioData(
-    stereoLeft,
+    lowIntensity,
     buffer => {
-      Audio.stereoMix.left = buffer;
+      Audio.buffers.low = buffer;
       resolve();
     },
     reject
   )));
 
   tasks.push(new Promise((resolve, reject) => Audio.context.decodeAudioData(
-    mainAudio,
+    normalIntensity,
     buffer => {
-      Audio.buffer = buffer;
+      Audio.buffers.normal = buffer;
       resolve();
     },
     reject

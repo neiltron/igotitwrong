@@ -9,12 +9,12 @@ class Loader {
     this.progressBar = document.getElementById('load_progress');
 
     this.manifest = {
-      mainAudio: {
+      normalIntensity: {
         type: 'binary',
         src: './assets/normal_intensity' + (isMobile ? '_mobile' : '') + '.mp3',
         stream: false
       },
-      stereoLeft: {
+      lowIntensity: {
         type: 'binary',
         src: './assets/low_intensity' + (isMobile ? '_mobile' : '') + '.mp3',
         stream: false
