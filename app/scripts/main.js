@@ -145,44 +145,57 @@ const drawCanvas = regl({
 
 // loader's self-calling. it calls itself.
 var audioError = error  => { console.log('audio error', error); };
-var loader = new Loader({
-  complete: ({stereoLeft, mainAudio}) => {
-    Audio.context.decodeAudioData(
-      stereoLeft,
-      buffer => { Audio.stereoMix.left = buffer; },
-      audioError
-    );
+var loader = new Loader();
+loader.load().then(({stereoLeft, mainAudio}) => {
+  var tasks = [];
 
-    Audio.context.decodeAudioData(
-      mainAudio,
-      buffer => { Audio.buffer = buffer; },
-      audioError
-    );
+  tasks.push(new Promise((resolve, reject) => Audio.context.decodeAudioData(
+    stereoLeft,
+    buffer => {
+      Audio.stereoMix.left = buffer;
+      resolve();
+    },
+    reject
+  )));
 
-    video = document.createElement('video');
-    video.autoplay = true;
-    video.src = 'assets/video_mobile.mp4';
-    video.pause();
+  tasks.push(new Promise((resolve, reject) => Audio.context.decodeAudioData(
+    mainAudio,
+    buffer => {
+      Audio.buffer = buffer;
+      resolve();
+    },
+    reject
+  )));
 
-    document.getElementById('load_progress').classList.add('done');
-    document.querySelector('section').style.opacity = 1;
+  video = document.createElement('video');
 
-    document.addEventListener('mousedown', unlock, true);
-    document.addEventListener('touchend', unlock, true);
+  tasks.push(new Promise((resolve, reject) => {
+    video.addEventListener('canplay', resolve);
+    video.onerror = reject;
+  }));
 
-    window.addEventListener('resize', resize, false);
+  video.src = 'assets/video_mobile.mp4';
+  video.load();
 
-    resize();
+  return Promise.all(tasks);
+}).then(function() {
+  document.getElementById('load_progress').classList.add('done');
 
-    setTimeout(() => {
-      const texture = regl.texture(video)
-      regl.frame(() => {
-        drawCanvas({
-          video: texture.subimage(video),
-          intensity: intensity,
-          mousepos: [mouseX, mouseY]
-        });
-      })
-    }, 1000);
-  }
+  document.addEventListener('mousedown', unlock, true);
+  document.addEventListener('touchend', unlock, true);
+
+  window.addEventListener('resize', resize, false);
+
+  resize();
+
+  document.documentElement.classList.add('loaded');
+
+  const texture = regl.texture(video)
+  regl.frame(() => {
+    drawCanvas({
+      video: texture.subimage(video),
+      intensity: intensity,
+      mousepos: [mouseX, mouseY]
+    });
+  });
 });

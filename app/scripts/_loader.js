@@ -6,7 +6,6 @@ class Loader {
 
     this.progressBar = document.getElementById('load_progress');
 
-    this.completeCb = opts.complete;
     this.manifest = {
       mainAudio: {
         type: 'binary',
@@ -20,23 +19,23 @@ class Loader {
       },
 
     };
-
-    this._load();
   }
 
   _progress(progress, msg) {
     this.progressBar.style.transform = 'scaleX(' + progress + ')';
   }
 
-  _load() {
-    resl({
-      manifest: this.manifest,
-      onProgress: this._progress,
-      onDone: (assets) => {
-        this.progressBar.style.transform = 'scaleX(1)';
-
-        this.completeCb.call(null, assets);
-      }
+  load() {
+    return new Promise((resolve, reject) => {
+      resl({
+        manifest: this.manifest,
+        onProgress: this._progress,
+        onError: reject,
+        onDone: (assets) => {
+          this.progressBar.style.transform = 'scaleX(1)';
+          resolve(assets);
+        }
+      });
     });
   }
 }
