@@ -26,11 +26,7 @@ var updateVideo = (time) => {
     video.currentTime = Audio.context.currentTime;
   }
 
-  // dont update progress bar on touch devices.
-  // the frequent updates were causing jankiness
-  if (typeof window.orientation === 'undefined') {
-    progressBar.update(Audio.context.currentTime / videoLength);
-  }
+  progressBar.update(Audio.context.currentTime / videoLength);
 
   requestAnimationFrame(updateVideo);
 };
@@ -53,9 +49,7 @@ var unlock = () => {
   document.addEventListener('mouseup', handleMouseUp, false)
   document.addEventListener('touchend', handleMouseUp, false);
 
-  if (!isMobile) {
-    progressBar = new ProgressBar();
-  }
+  progressBar = new ProgressBar();
 };
 
 var handleMouseDown = (e) => {

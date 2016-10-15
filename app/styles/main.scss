@@ -50,7 +50,7 @@ body {
     color: #fff;
   }
 
-  div.progress {
+  .progress {
     height: 4px;
     width: 100vw;
     position: absolute;
@@ -66,6 +66,8 @@ body {
     }
 
     &#video_progress {
+      background-color: transparent;
+      transform: none;
       height: 2px;
     }
   }
