@@ -18,7 +18,6 @@ let width = document.documentElement.clientWidth,
     isMouseDown = false,
     progressBar,
     canvas = document.querySelector('canvas'),
-    userHasInteracted = false,
     isMobile = ('ontouchstart' in window);
 
 
