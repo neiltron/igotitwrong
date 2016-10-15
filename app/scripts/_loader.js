@@ -1,5 +1,7 @@
 import resl from 'resl';
 
+const isMobile = ('ontouchstart' in window);
+
 class Loader {
   constructor(opts) {
     this._progress = this._progress.bind(this);
@@ -9,12 +11,12 @@ class Loader {
     this.manifest = {
       mainAudio: {
         type: 'binary',
-        src: './assets/normal_intensity.mp3',
+        src: './assets/normal_intensity' + (isMobile ? '_mobile' : '') + '.mp3',
         stream: false
       },
       stereoLeft: {
         type: 'binary',
-        src: './assets/low_intensity.mp3',
+        src: './assets/low_intensity' + (isMobile ? '_mobile' : '') + '.mp3',
         stream: false
       },
 
