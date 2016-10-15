@@ -19,8 +19,10 @@ let width = document.documentElement.clientWidth,
     isMouseDown = false,
     progressBar,
     canvas = document.querySelector('canvas'),
+    introVideo = document.querySelector('#landing video'),
     isMobile = ('ontouchstart' in window);
 
+introVideo.src = 'assets/intro' + (isMobile ? '_mobile' : '') + '.mp4';
 
 var getCoords = e => {
   if (e.touches && e.touches.length) {
@@ -57,6 +59,10 @@ var resume = function() {
 };
 
 var unlock = () => {
+  if (introVideo) {
+    introVideo.pause();
+  }
+
   video.addEventListener('canplay', resume);
   video.addEventListener('playing', resume);
   video.addEventListener('waiting', pause);
