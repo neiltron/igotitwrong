@@ -106,7 +106,7 @@ var handleMouseDown = (e) => {
       document.documentElement.webkitRequestFullscreen();
     }
 
-    if (screen.orientation.lock) {
+    if (screen.orientation && screen.orientation.lock) {
       screen.orientation.lock('landscape');
     }
   }
@@ -236,6 +236,7 @@ loader.load().then(({lowIntensity, normalIntensity}) => {
   )));
 
   video = document.createElement('video');
+  video.setAttribute('playsinline', true);
 
   tasks.push(new Promise((resolve, reject) => {
     video.addEventListener('canplay', resolve);
