@@ -96,24 +96,6 @@ body {
       font-weight:100;
       text-transform: uppercase;
       -webkit-font-smoothing: antialiased;
-
-      span {
-        align-self: center;
-        opacity: .7;
-      }
-
-      &.intro-start span {
-        align-self: flex-end;
-        opacity: .7;
-      }
-      &.intro-end span {
-        align-self: flex-start;
-
-        -webkit-animation: 1s ease-in-out 0 infinite pulse;
-        -moz-animation:    1s ease-in-out 0 infinite pulse;
-        -o-animation:      1s ease-in-out 0 infinite pulse;
-        animation:         1s ease-in-out 0 infinite pulse;
-      }
     }
   }
 
@@ -170,6 +152,17 @@ body {
       width: 100%;
       height: auto;
     }
+  }
+
+  #intro-text {
+    margin: auto;
+    position: absolute;
+    overflow: hidden;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    transform: scale3d(0.75, 0.75, 1);
   }
 
   div {
