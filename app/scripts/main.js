@@ -19,6 +19,7 @@ let width = document.documentElement.clientWidth,
     isMouseDown = false,
     progressBar,
     canvas = document.querySelector('canvas'),
+    landing = document.querySelector('#landing'),
     introVideo = document.querySelector('#landing video'),
     isMobile = ('ontouchstart' in window);
 
@@ -61,6 +62,7 @@ var resume = function() {
 var unlock = () => {
   if (introVideo) {
     introVideo.pause();
+    landing.style.display = 'none';
   }
 
   video.addEventListener('canplay', resume);
@@ -117,11 +119,19 @@ var handleMouseDown = (e) => {
 
   isMouseDown = true;
 
-  mouseX = coords.x - e.target.getBoundingClientRect().left;
-  mouseY = canvas.height - (coords.y - e.target.getBoundingClientRect().top) - canvas.height / 2;
+  setMousePosition(e);
 
   requestAnimationFrame(adjustIntensity);
 };
+
+var setMousePosition = (e) => {
+  var coords = getCoords(e);
+
+  mouseX = coords.x - e.target.getBoundingClientRect().left;
+  mouseY = canvas.height - (coords.y - e.target.getBoundingClientRect().top) - canvas.height / 2;
+
+  console.log(mouseX, mouseY)
+}
 
 var handleMouseUp = () => {
   isMouseDown = false;
@@ -133,14 +143,13 @@ var handleMouseUp = () => {
 var handleMouseMove = (e) => {
   e.preventDefault();
 
-  var coords = getCoords(e);
-
   if (isMouseDown) {
+    var coords = getCoords(e);
+
+    setMousePosition(e);
+
     Audio.updateFilter(coords.x, coords.y);
   }
-
-  mouseX = coords.x - e.target.getBoundingClientRect().left;
-  mouseY = canvas.height - (coords.y - e.target.getBoundingClientRect().top) - canvas.height / 2;
 };
 
 var handleKeyUp = e => {
