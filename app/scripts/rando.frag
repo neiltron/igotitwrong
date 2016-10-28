@@ -17,7 +17,7 @@ vec4 shiftColor;
 float noise;
 float opacity = 1.0;
 float distanceXY = 0.0;
-float blurDistance = 300.0;
+float blurDistance = 500.0;
 
 #pragma glslify: noise2 = require("glsl-noise/classic/3d")
 
@@ -43,7 +43,7 @@ void applyShift()
     if (u_intensity < 0.0) { return; }
 
     if (u_ismobile == true) {
-        blurDistance = 150.0;
+        blurDistance = 250.0;
     }
 
     noise = noise2(vec3(gl_FragCoord.xy * 0.001, time * SPEED));

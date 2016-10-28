@@ -62,7 +62,6 @@ var resume = function() {
 var unlock = () => {
   if (introVideo) {
     introVideo.pause();
-    landing.style.display = 'none';
   }
 
   video.addEventListener('canplay', resume);
@@ -127,8 +126,8 @@ var handleMouseDown = (e) => {
 var setMousePosition = (e) => {
   var coords = getCoords(e);
 
-  mouseX = coords.x - e.target.getBoundingClientRect().left;
-  mouseY = canvas.height - (coords.y - e.target.getBoundingClientRect().top) - canvas.height / 2;
+  mouseX = coords.x - canvas.getBoundingClientRect().left;
+  mouseY = canvas.height - (coords.y - canvas.getBoundingClientRect().top) - canvas.height / 2;
 
   console.log(mouseX, mouseY)
 }
