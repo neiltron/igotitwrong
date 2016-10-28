@@ -61,19 +61,23 @@ void applyShift()
 
 void main()
 {
-    opacity = 1.0;
-    shiftColor = vec4(0.0, 0.0, 0.0, 1.0);
+    if (u_intensity > 0.0) {
+        opacity = 1.0;
+        shiftColor = vec4(0.0, 0.0, 0.0, 1.0);
 
-    applyShift();
+        applyShift();
 
-    vec4 color = texture2D(texture, vTextureCoord.xy);
-    color.a = opacity;
+        vec4 color = texture2D(texture, vTextureCoord.xy);
+        color.a = opacity;
 
-    if (u_intensity == 0.0) {
-        shiftColor.a = 0.0;
+        if (u_intensity == 0.0) {
+            shiftColor.a = 0.0;
+        } else {
+            shiftColor.a = 1.0 - opacity;
+        }
+
+        gl_FragColor = (color * (1.5 - u_intensity)) + (shiftColor * u_intensity);
     } else {
-        shiftColor.a = 1.0 - opacity;
+        gl_FragColor = texture2D(texture, vTextureCoord.xy);
     }
-
-    gl_FragColor = (color * (1.5 - u_intensity)) + (shiftColor * u_intensity);
 }
