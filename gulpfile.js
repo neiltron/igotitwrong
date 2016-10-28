@@ -45,7 +45,7 @@ gulp.task('scripts', () => {
 });
 
 gulp.task('assets', () => {
-  return gulp.src('app/assets/*')
+  return gulp.src('app/assets/**/*')
     .pipe(gulp.dest('.tmp/assets'))
     .pipe(gulp.dest('dist/assets'));
 });
@@ -160,6 +160,35 @@ gulp.task('serve:test', ['scripts'], () => {
 gulp.task('deploy', ['build'], function() {
   return gulp.src('./dist/**/*')
     .pipe($.ghPages());
+});
+
+gulp.task('publish', ['build'], function() {
+  var keys = {
+    accessKeyId: '',
+    secretAccessKey: '',
+  };
+
+  if (!keys.accessKeyId || !keys.secretAccessKey) {
+    throw new Error('AWS keys not specified. Edit the `publish` task in gulpfile.js!');
+  }
+
+  var aws = $.awspublish;
+  var publisher = aws.create({
+    region: 'us-east-1',
+    params: {
+      Bucket: 'igotitwrong.com'
+    },
+    accessKeyId: keys.accessKeyId,
+    secretAccessKey: keys.secretAccessKey,
+  });
+
+  var headers = {
+    'Cache-Control': 'max-age=2592000, no-transform, public'
+  };
+
+  return gulp.src('./dist/**/*')
+    .pipe(publisher.publish(headers, {}))
+    .pipe(aws.reporter());
 });
 
 gulp.task('build', ['lint', 'html', 'images', 'extras', 'assets'], () => {

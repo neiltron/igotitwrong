@@ -11,5 +11,9 @@
 `gulp build`
 
 ### Deploy
-Currently hosted on Github Pages. Deploy will run build and send assets to GH.
+Deploy will run build and send assets to GH.
 `gulp deploy`
+
+### Publish
+Publish will run build and send assets to Amazon S3 for https://igotitwrong.com/
+`gulp publish`

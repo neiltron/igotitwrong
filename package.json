@@ -17,6 +17,7 @@
     "glslify": "^5.1.0",
     "gulp": "^3.9.0",
     "gulp-autoprefixer": "^3.0.1",
+    "gulp-awspublish": "^3.3.0",
     "gulp-babel": "^6.1.1",
     "gulp-cache": "^0.4.2",
     "gulp-cssnano": "^2.0.0",
