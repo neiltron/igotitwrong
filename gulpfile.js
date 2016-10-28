@@ -1,6 +1,7 @@
 // generated on 2016-07-21 using generator-webapp 2.1.0
 const gulp = require('gulp');
 const gulpLoadPlugins = require('gulp-load-plugins');
+const request = require('request');
 const browserSync = require('browser-sync');
 const del = require('del');
 const browserify = require('browserify');
@@ -162,14 +163,14 @@ gulp.task('deploy', ['build'], function() {
     .pipe($.ghPages());
 });
 
-gulp.task('publish', ['build'], function() {
-  var keys = {
+gulp.task('push-s3', ['build'], function() {
+  var awsConfig = {
     accessKeyId: '',
     secretAccessKey: '',
   };
 
-  if (!keys.accessKeyId || !keys.secretAccessKey) {
-    throw new Error('AWS keys not specified. Edit the `publish` task in gulpfile.js!');
+  if (!awsConfig.accessKeyId || !awsConfig.secretAccessKey) {
+    throw new Error('AWS config not specified. Edit the `push-s3` task in gulpfile.js!');
   }
 
   var aws = $.awspublish;
@@ -178,8 +179,8 @@ gulp.task('publish', ['build'], function() {
     params: {
       Bucket: 'igotitwrong.com'
     },
-    accessKeyId: keys.accessKeyId,
-    secretAccessKey: keys.secretAccessKey,
+    accessKeyId: awsConfig.accessKeyId,
+    secretAccessKey: awsConfig.secretAccessKey,
   });
 
   var headers = {
@@ -187,8 +188,31 @@ gulp.task('publish', ['build'], function() {
   };
 
   return gulp.src('./dist/**/*')
-    .pipe(publisher.publish(headers, {}))
+    .pipe(publisher.publish(headers, { force: true }))
     .pipe(aws.reporter());
+});
+
+gulp.task('publish', ['push-s3'], function() {
+  var cloudflareConfig = {
+    apiKey: '',
+    email: '',
+    zoneId: '',
+  };
+
+  if (!cloudflareConfig.apiKey || !cloudflareConfig.email || !cloudflareConfig.zoneId) {
+    throw new Error('Cloudflare config not specified. Edit the `publish` task in gulpfile.js!');
+  }
+
+  return request({
+    method: 'DELETE',
+    url: `https://api.cloudflare.com/client/v4/zones/${cloudflareConfig.zoneId}/purge_cache`,
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Auth-Key': cloudflareConfig.apiKey,
+      'X-Auth-Email': cloudflareConfig.email,
+    },
+    body: JSON.stringify({ purge_everything: true }),
+  }).pipe(process.stdout);
 });
 
 gulp.task('build', ['lint', 'html', 'images', 'extras', 'assets'], () => {

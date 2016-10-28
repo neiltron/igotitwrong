@@ -15,5 +15,5 @@ Deploy will run build and send assets to GH.
 `gulp deploy`
 
 ### Publish
-Publish will run build and send assets to Amazon S3 for https://igotitwrong.com/
+Publish will run build, send assets to Amazon S3, and purge Cloudflare cache for https://igotitwrong.com/
 `gulp publish`
