@@ -80,7 +80,7 @@ gulp.task('html', ['styles', 'scripts'], () => {
     .pipe($.useref({searchPath: ['.tmp', 'app', '.']}))
     .pipe($.if('*.js', $.uglify()))
     .pipe($.if('*.css', $.cssnano({safe: true, autoprefixer: false})))
-    .pipe($.if('*.html', $.htmlmin({collapseWhitespace: true})))
+    //.pipe($.if('*.html', $.htmlmin({collapseWhitespace: true}))) <- Facebook doesn't parse OG tags with this
     .pipe(gulp.dest('dist'));
 });
 
