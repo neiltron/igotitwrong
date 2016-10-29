@@ -165,6 +165,59 @@ body {
     transform: scale3d(0.75, 0.75, 1);
   }
 
+  #intro-cta {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 11vw;
+    height: 11vw;
+    background: #fff;
+    border-radius: 10vw;
+    transform: translate3d(-50%, 100%, 0) scale3d(0.8, 0.8, 1);
+    transition: all 0.4s cubic-bezier(.66,.03,.7,.5);
+    opacity: 0;
+    overflow: hidden;
+
+    &.show {
+      opacity: 1;
+    }
+
+    .arrow {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      background: url('/assets/hype/intro/PastedVector-3.svg') no-repeat;
+      background-size: 25%;
+      background-position: 50%;
+      opacity: 0.5;
+      transform: translate3d(0, 0, 0);
+      transition: inherit;
+
+      &:first-child {
+        transform: translate3d(-30%, 0, 0);
+        opacity: 0;
+      }
+    }
+
+    &:hover {
+      transition: all 0.3s ease;
+      transform: translate3d(-50%, 100%, 0) scale3d(1, 1, 1);
+
+      .arrow {
+        transition: inherit;
+        transform: translate3d(50%, 0, 0);
+        opacity: 0;
+
+        &:first-child {
+          transform: translate3d(0, 0, 0);
+          opacity: 1;
+        }
+      }
+    }
+  }
+
   div {
     z-index: 1;
   }

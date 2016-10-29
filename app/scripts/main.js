@@ -257,6 +257,7 @@ loader.load().then(({lowIntensity, normalIntensity}) => {
   return Promise.all(tasks);
 }).then(function() {
   document.getElementById('load_progress').classList.add('done');
+  document.getElementById('intro-cta').classList.add('show');
 
   document.addEventListener('mousedown', unlock, true);
   document.addEventListener('touchend', unlock, true);
