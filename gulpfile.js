@@ -96,6 +96,10 @@ gulp.task('images', () => {
     .pipe(gulp.dest('dist/images'));
 });
 
+gulp.task('fonts', () => {
+  return gulp.src('app/fonts/**/*')
+    .pipe(gulp.dest('dist/fonts'));
+});
 gulp.task('extras', () => {
   return gulp.src([
     'app/*.*',
@@ -215,7 +219,7 @@ gulp.task('publish', ['push-s3'], function() {
   }).pipe(process.stdout);
 });
 
-gulp.task('build', ['lint', 'html', 'images', 'extras', 'assets'], () => {
+gulp.task('build', ['lint', 'html', 'images', 'fonts', 'extras', 'assets'], () => {
   return gulp.src('dist/**/*').pipe($.size({title: 'build', gzip: true}));
 });
 
