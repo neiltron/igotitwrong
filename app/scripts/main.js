@@ -25,6 +25,25 @@ let width = document.documentElement.clientWidth,
 
 introVideo.src = 'assets/intro' + (isMobile ? '_mobile' : '') + '.mp4';
 
+document.querySelector('#share a.fb').addEventListener('click', e => {
+  if (isMobile) {
+    return;
+  }
+
+  e.preventDefault();
+
+  var w = 410;
+  var h = 360;
+  var x = Math.floor(window.outerWidth / 2 + window.screenX - (w / 2));
+  var y = Math.floor(window.outerHeight / 2 + window.screenY - (h / 2));
+  window.open(e.target.href, 'fb-share' + Math.random(), `chrome=yes,centerscreen,width=${w},height=${h},left=${x},top=${y}`);
+});
+
+window.addEventListener('load', () => setTimeout(() => {
+  document.getElementById('intro-tease').classList.add('show');
+  document.getElementById('share').classList.add('show');
+}, 3000));
+
 var getCoords = e => {
   if (e.touches && e.touches.length) {
     return { x: e.touches[0].pageX, y: e.touches[0].pageY };
@@ -258,6 +277,8 @@ loader.load().then(({lowIntensity, normalIntensity}) => {
 }).then(function() {
   document.getElementById('load_progress').classList.add('done');
   document.getElementById('intro-cta').classList.add('show');
+  document.getElementById('intro-tease').classList.remove('show');
+  document.getElementById('share').classList.remove('show');
 
   document.addEventListener('mousedown', unlock, true);
   document.addEventListener('touchend', unlock, true);

@@ -8,6 +8,7 @@ html, body {
   overflow: hidden;
   width: 100%;
   height: 100%;
+  font-size: 62.5%;
 }
 
 body {
@@ -166,6 +167,75 @@ body {
     transform: scale3d(0.75, 0.75, 1);
   }
 
+  #intro-tease {
+    opacity: 0;
+    color: #fff;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.4s linear;
+
+    &.show {
+      opacity: 1;
+    }
+
+    html.loaded & {
+      opacity: 0;
+    }
+
+    span {
+      margin-top: 16vw;
+      font-size: 3vw;
+    }
+  }
+
+  #share {
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.4s linear;
+
+    &.show {
+      opacity: 1;
+    }
+
+    html.loaded & {
+      opacity: 0;
+    }
+
+    span {
+      margin-top: 30vw;
+      font-size: 4vw;
+    }
+
+    a {
+      margin: 0 1vw;
+      text-decoration: none;
+      color: #fff;
+
+      &:hover {
+        color: #bbb;
+      }
+
+      i {
+        pointer-events: none;
+      }
+    }
+  }
+
   #intro-cta {
     position: absolute;
     left: 50%;
@@ -178,9 +248,11 @@ body {
     transition: all 0.4s cubic-bezier(.66,.03,.7,.5);
     opacity: 0;
     overflow: hidden;
+    pointer-events: none;
 
     &.show {
       opacity: 1;
+      pointer-events: auto;
     }
 
     .arrow {
