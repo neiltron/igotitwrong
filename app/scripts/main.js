@@ -166,7 +166,7 @@ var setMousePosition = (e) => {
   lastMouseX = mouseX;
   lastMouseY = mouseY;
   mouseX = coords.x - canvas.getBoundingClientRect().left;
-  mouseY = canvas.height - (coords.y - canvas.getBoundingClientRect().top) - canvas.height / 2;
+  mouseY = coords.y - canvas.getBoundingClientRect().top;
 }
 
 var handleMouseUp = () => {

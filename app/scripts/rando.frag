@@ -44,7 +44,7 @@ void main() {
   }
 
   // zoomBlur(texture, center, strength, texCoord, texSize)
-  vec4 color = zoomBlur(texture, u_mousepos * vec2(1, -1), u_intensity * (1.0 - u_blurdecay * 0.9) * 0.2, vTextureCoord, u_resolution);
+  vec4 color = zoomBlur(texture, u_mousepos, u_intensity * (1.0 - u_blurdecay * 0.9) * 0.3, vTextureCoord, u_resolution);
 
   // Grayscale
   color.rgb = mix(color.rgb, vec3(0.2126*color.r + 0.7152*color.g + 0.0722*color.b), u_intensity);
