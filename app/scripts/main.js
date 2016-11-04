@@ -14,8 +14,11 @@ let width = document.documentElement.clientWidth,
     videoLength = 242,
     paused = false,
     intensity = 0.0,
+    blurdecay = 0.0,
     mouseX = 0.0,
     mouseY = 0.0,
+    lastMouseX = 0,
+    lastMouseY = 0,
     isMouseDown = false,
     progressBar,
     canvas = document.querySelector('canvas'),
@@ -148,6 +151,7 @@ var handleMouseDown = (e) => {
 
   var coords = getCoords(e);
 
+  blurdecay = 0;
   intensity = calcIntensity(coords.x, coords.y);
   Audio.setIntensity(intensity);
 
@@ -159,6 +163,8 @@ var handleMouseDown = (e) => {
 var setMousePosition = (e) => {
   var coords = getCoords(e);
 
+  lastMouseX = mouseX;
+  lastMouseY = mouseY;
   mouseX = coords.x - canvas.getBoundingClientRect().left;
   mouseY = canvas.height - (coords.y - canvas.getBoundingClientRect().top) - canvas.height / 2;
 }
@@ -174,6 +180,11 @@ var handleMouseMove = (e) => {
     var coords = getCoords(e);
 
     setMousePosition(e);
+
+    if (Math.abs(lastMouseX - mouseX) > 2 || Math.abs(lastMouseY - mouseY) > 2) {
+      // If user moved substantially (i.e. finger is not at rest), reset blur decay
+      blurdecay = 0;
+    }
 
     intensity = calcIntensity(coords.x, coords.y);
     Audio.setIntensity(intensity);
@@ -221,11 +232,11 @@ var loop = function() {
 
   progressBar.update(Math.min(1, video.currentTime / videoLength));
 
-  if (isMouseDown) {
-    return;
+  if (blurdecay < 1) {
+    blurdecay = Math.min(1, blurdecay + (1 - blurdecay) * 0.002 * delta);
   }
 
-  if (intensity > 0.0) {
+  if (!isMouseDown && intensity > 0.0) {
     intensity = Math.max(0, intensity - 0.00125 * delta);
     Audio.setIntensity(intensity);
   }
@@ -249,8 +260,8 @@ const drawCanvas = regl({
     u_intensity: regl.prop('intensity'),
     time: regl.context('time'),
     u_resolution: [canvas.width, canvas.height],
+    u_blurdecay: regl.prop('blurdecay'),
     u_mousepos: regl.prop('mousepos'),
-    u_ismobile: isMobile
   }
 })
 
@@ -310,6 +321,7 @@ loader.load().then(({lowIntensity, normalIntensity}) => {
     drawCanvas({
       video: texture.subimage(video),
       intensity: intensity,
+      blurdecay: blurdecay,
       mousepos: [mouseX, mouseY]
     });
   });

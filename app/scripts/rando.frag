@@ -6,8 +6,8 @@ uniform sampler2D texture;
 uniform float time;
 uniform vec2 u_resolution;
 uniform float u_intensity;
+uniform float u_blurdecay;
 uniform vec2 u_mousepos;
-uniform bool u_ismobile;
 varying vec2 vTextureCoord;
 
 // Imported from https://github.com/evanw/glfx.js/blob/58841c23919bd59787effc0333a4897b43835412/src/filters/common.js
@@ -44,7 +44,7 @@ void main() {
   }
 
   // zoomBlur(texture, center, strength, texCoord, texSize)
-  vec4 color = zoomBlur(texture, u_mousepos * vec2(1, -1), u_intensity * 0.2, vTextureCoord, u_resolution);
+  vec4 color = zoomBlur(texture, u_mousepos * vec2(1, -1), u_intensity * (1.0 - u_blurdecay * 0.9) * 0.2, vTextureCoord, u_resolution);
 
   // Grayscale
   color.rgb = mix(color.rgb, vec3(0.2126*color.r + 0.7152*color.g + 0.0722*color.b), u_intensity);
