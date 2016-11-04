@@ -73,13 +73,6 @@ var calcIntensity = (x, y) => {
   return Math.min(1, sensitivity * (distance / Math.min(window.innerWidth, window.innerHeight)));
 };
 
-
-var updateVideo = (time) => {
-  progressBar.update(Math.min(1, video.currentTime / videoLength));
-
-  requestAnimationFrame(updateVideo);
-};
-
 var pause = function() {
   if (paused) {
     return;
@@ -119,8 +112,6 @@ var unlock = () => {
     video.pause();
   });
 
-  requestAnimationFrame(updateVideo);
-
   document.body.classList.add('videoLoaded');
 
   document.removeEventListener('touchend', unlock, true);
@@ -138,6 +129,8 @@ var unlock = () => {
   document.addEventListener('keyup', handleKeyUp);
 
   progressBar = new ProgressBar();
+  lastUpdate = Date.now();
+  loop();
 };
 
 var handleMouseDown = (e) => {
@@ -161,9 +154,6 @@ var handleMouseDown = (e) => {
   isMouseDown = true;
 
   setMousePosition(e);
-
-  lastUpdate = Date.now();
-  requestAnimationFrame(adjustIntensity);
 };
 
 var setMousePosition = (e) => {
@@ -175,9 +165,6 @@ var setMousePosition = (e) => {
 
 var handleMouseUp = () => {
   isMouseDown = false;
-
-  lastUpdate = Date.now();
-  requestAnimationFrame(adjustIntensity);
 };
 
 var handleMouseMove = (e) => {
@@ -205,21 +192,6 @@ var handleKeyUp = e => {
   }
 };
 
-var adjustIntensity = () => {
-  if (isMouseDown) {
-    return;
-  }
-
-  var delta = Date.now() - lastUpdate;
-  lastUpdate = Date.now();
-
-  if (intensity > 0.0) {
-    intensity = Math.max(0, intensity - 0.00125 * delta);
-    Audio.setIntensity(intensity);
-    requestAnimationFrame(adjustIntensity);
-  }
-};
-
 var resize = () => {
   var width = window.innerWidth,
       height = window.innerHeight,
@@ -239,6 +211,24 @@ var resize = () => {
 
   canvas.style.width = width + 'px';
   canvas.style.height = height + 'px';
+};
+
+var loop = function() {
+  requestAnimationFrame(loop);
+
+  var delta = Date.now() - lastUpdate;
+  lastUpdate = Date.now();
+
+  progressBar.update(Math.min(1, video.currentTime / videoLength));
+
+  if (isMouseDown) {
+    return;
+  }
+
+  if (intensity > 0.0) {
+    intensity = Math.max(0, intensity - 0.00125 * delta);
+    Audio.setIntensity(intensity);
+  }
 };
 
 const drawCanvas = regl({
