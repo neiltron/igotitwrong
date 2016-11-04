@@ -101,32 +101,10 @@ class Audio {
     this.timeOffset = time - this.context.currentTime;
   }
 
-  updateFilter(x, y) {
-    var width = window.innerWidth;
-    var height = window.innerHeight;
-
-    var deltaX = (width / 2) - x;
-    var deltaY = (height / 2) - y;
-
-    // Make it easier hit 100% from either axis
-    if (width < height) {
-      deltaX *= (height / width);
-    } else {
-      deltaY *= (width / height);
-    }
-
-    // Distance from center determines effect amount
-    var distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
-    this.effectAmount = Math.min(1, distance / Math.min(window.innerWidth, window.innerHeight));
-
-    this._updateGains();
-  };
-
-  resetFilter() {
-    this.effectAmount = 0;
+  setIntensity(intensity) {
+    this.effectAmount = Math.min(1, intensity);
     this._updateGains();
   }
-
 }
 
 export default new Audio();

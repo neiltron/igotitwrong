@@ -21,6 +21,7 @@ let width = document.documentElement.clientWidth,
     canvas = document.querySelector('canvas'),
     landing = document.querySelector('#landing'),
     introVideo = document.querySelector('#landing video'),
+    lastUpdate = Date.now(),
     isMobile = ('ontouchstart' in window);
 
 introVideo.src = 'assets/intro' + (isMobile ? '_mobile' : '') + '.mp4';
@@ -51,6 +52,27 @@ var getCoords = e => {
 
   return { x: e.pageX, y: e.pageY };
 };
+
+var calcIntensity = (x, y) => {
+  var width = window.innerWidth;
+  var height = window.innerHeight;
+
+  var deltaX = (width / 2) - x;
+  var deltaY = (height / 2) - y;
+
+  // Make it easier hit 100% from either axis
+  if (width < height) {
+    deltaX *= (height / width);
+  } else {
+    deltaY *= (width / height);
+  }
+
+  // Distance from center determines effect amount
+  var distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+  var sensitivity = 1.5; // make it easier to reach max distance
+  return Math.min(1, sensitivity * (distance / Math.min(window.innerWidth, window.innerHeight)));
+};
+
 
 var updateVideo = (time) => {
   progressBar.update(Math.min(1, video.currentTime / videoLength));
@@ -133,12 +155,14 @@ var handleMouseDown = (e) => {
 
   var coords = getCoords(e);
 
-  Audio.updateFilter(coords.x, coords.y);
+  intensity = calcIntensity(coords.x, coords.y);
+  Audio.setIntensity(intensity);
 
   isMouseDown = true;
 
   setMousePosition(e);
 
+  lastUpdate = Date.now();
   requestAnimationFrame(adjustIntensity);
 };
 
@@ -147,14 +171,12 @@ var setMousePosition = (e) => {
 
   mouseX = coords.x - canvas.getBoundingClientRect().left;
   mouseY = canvas.height - (coords.y - canvas.getBoundingClientRect().top) - canvas.height / 2;
-
-  console.log(mouseX, mouseY)
 }
 
 var handleMouseUp = () => {
   isMouseDown = false;
-  Audio.resetFilter();
 
+  lastUpdate = Date.now();
   requestAnimationFrame(adjustIntensity);
 };
 
@@ -166,7 +188,8 @@ var handleMouseMove = (e) => {
 
     setMousePosition(e);
 
-    Audio.updateFilter(coords.x, coords.y);
+    intensity = calcIntensity(coords.x, coords.y);
+    Audio.setIntensity(intensity);
   }
 };
 
@@ -183,13 +206,16 @@ var handleKeyUp = e => {
 };
 
 var adjustIntensity = () => {
-  if (isMouseDown && intensity < 1.0) {
-    intensity += 0.05;
+  if (isMouseDown) {
+    return;
+  }
 
-    requestAnimationFrame(adjustIntensity);
-  } else if (!isMouseDown && intensity > 0.0) {
-    intensity -= 0.025;
+  var delta = Date.now() - lastUpdate;
+  lastUpdate = Date.now();
 
+  if (intensity > 0.0) {
+    intensity = Math.max(0, intensity - 0.00125 * delta);
+    Audio.setIntensity(intensity);
     requestAnimationFrame(adjustIntensity);
   }
 };
