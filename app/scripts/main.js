@@ -25,6 +25,8 @@ let width = document.documentElement.clientWidth,
     landing = document.querySelector('#landing'),
     introVideo = document.querySelector('#landing video'),
     lastUpdate = Date.now(),
+    audioIntensity = 0,
+    audioTween = 0,
     isMobile = ('ontouchstart' in window);
 
 introVideo.src = 'assets/intro' + (isMobile ? '_mobile' : '') + '.mp4';
@@ -73,7 +75,9 @@ var calcIntensity = (x, y) => {
   // Distance from center determines effect amount
   var distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
   var sensitivity = 1.5; // make it easier to reach max distance
-  return Math.min(1, sensitivity * (distance / Math.min(window.innerWidth, window.innerHeight)));
+  var result = Math.min(1, sensitivity * (distance / Math.min(window.innerWidth, window.innerHeight)));
+
+  return Math.max(0.5, result);
 };
 
 var pause = function() {
@@ -93,6 +97,7 @@ var resume = function() {
 
   paused = false;
   Audio.resume(video.currentTime);
+  Audio.setIntensity(audioIntensity);
   video.play();
 };
 
@@ -153,7 +158,7 @@ var handleMouseDown = (e) => {
 
   blurdecay = 0;
   intensity = calcIntensity(coords.x, coords.y);
-  Audio.setIntensity(intensity);
+  audioTween = 1;
 
   isMouseDown = true;
 
@@ -171,6 +176,7 @@ var setMousePosition = (e) => {
 
 var handleMouseUp = () => {
   isMouseDown = false;
+  audioTween = -1;
 };
 
 var handleMouseMove = (e) => {
@@ -187,7 +193,6 @@ var handleMouseMove = (e) => {
     }
 
     intensity = calcIntensity(coords.x, coords.y);
-    Audio.setIntensity(intensity);
   }
 };
 
@@ -232,13 +237,20 @@ var loop = function() {
 
   progressBar.update(Math.min(1, video.currentTime / videoLength));
 
+  if (audioTween < 0 && audioIntensity > 0) {
+    audioIntensity = Math.max(0, audioIntensity - 0.002 * delta);
+    Audio.setIntensity(audioIntensity);
+  } else if (audioTween > 0 && audioIntensity < 1) {
+    audioIntensity = Math.min(1, audioIntensity + 0.002 * delta);
+    Audio.setIntensity(audioIntensity);
+  }
+
   if (blurdecay < 1) {
     blurdecay = Math.min(1, blurdecay + (1 - blurdecay) * 0.002 * delta);
   }
 
   if (!isMouseDown && intensity > 0.0) {
     intensity = Math.max(0, intensity - 0.00125 * delta);
-    Audio.setIntensity(intensity);
   }
 };
 
