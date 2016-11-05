@@ -167,11 +167,12 @@ var handleMouseDown = (e) => {
 
 var setMousePosition = (e) => {
   var coords = getCoords(e);
+  var rect = canvas.getBoundingClientRect();
 
   lastMouseX = mouseX;
   lastMouseY = mouseY;
-  mouseX = coords.x - canvas.getBoundingClientRect().left;
-  mouseY = coords.y - canvas.getBoundingClientRect().top;
+  mouseX = coords.x - rect.left;
+  mouseY = coords.y - rect.top;
 }
 
 var handleMouseUp = () => {
@@ -271,7 +272,7 @@ const drawCanvas = regl({
     texture: regl.prop('video'),
     u_intensity: regl.prop('intensity'),
     time: regl.context('time'),
-    u_resolution: [canvas.width, canvas.height],
+    u_resolution: regl.prop('resolution'),
     u_blurdecay: regl.prop('blurdecay'),
     u_mousepos: regl.prop('mousepos'),
   }
@@ -334,7 +335,8 @@ loader.load().then(({lowIntensity, normalIntensity}) => {
       video: texture.subimage(video),
       intensity: intensity,
       blurdecay: blurdecay,
-      mousepos: [mouseX, mouseY]
+      mousepos: [mouseX, mouseY],
+      resolution: [canvas.width, canvas.height],
     });
   });
 });
