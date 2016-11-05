@@ -58,28 +58,6 @@ var getCoords = e => {
   return { x: e.pageX, y: e.pageY };
 };
 
-var calcIntensity = (x, y) => {
-  var width = window.innerWidth;
-  var height = window.innerHeight;
-
-  var deltaX = (width / 2) - x;
-  var deltaY = (height / 2) - y;
-
-  // Make it easier hit 100% from either axis
-  if (width < height) {
-    deltaX *= (height / width);
-  } else {
-    deltaY *= (width / height);
-  }
-
-  // Distance from center determines effect amount
-  var distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
-  var sensitivity = 1.5; // make it easier to reach max distance
-  var result = Math.min(1, sensitivity * (distance / Math.min(window.innerWidth, window.innerHeight)));
-
-  return Math.max(0.5, result);
-};
-
 var pause = function() {
   if (paused) {
     return;
@@ -154,10 +132,8 @@ var handleMouseDown = (e) => {
     }
   }
 
-  var coords = getCoords(e);
-
   blurdecay = 0;
-  intensity = calcIntensity(coords.x, coords.y);
+  intensity = 1;
   audioTween = 1;
 
   isMouseDown = true;
@@ -184,8 +160,6 @@ var handleMouseMove = (e) => {
   e.preventDefault();
 
   if (isMouseDown) {
-    var coords = getCoords(e);
-
     setMousePosition(e);
 
     if (Math.abs(lastMouseX - mouseX) > 2 || Math.abs(lastMouseY - mouseY) > 2) {
@@ -193,7 +167,7 @@ var handleMouseMove = (e) => {
       blurdecay = 0;
     }
 
-    intensity = calcIntensity(coords.x, coords.y);
+    intensity = 1;
   }
 };
 
