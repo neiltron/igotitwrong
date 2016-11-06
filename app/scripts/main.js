@@ -31,7 +31,7 @@ let width = document.documentElement.clientWidth,
 
 introVideo.src = 'assets/intro' + (isMobile ? '_mobile' : '') + '.mp4';
 
-document.querySelector('#share a.fb').addEventListener('click', e => {
+document.querySelector('a.fb').addEventListener('click', e => {
   if (isMobile) {
     return;
   }
@@ -44,11 +44,6 @@ document.querySelector('#share a.fb').addEventListener('click', e => {
   var y = Math.floor(window.outerHeight / 2 + window.screenY - (h / 2));
   window.open(e.target.href, 'fb-share' + Math.random(), `chrome=yes,centerscreen,width=${w},height=${h},left=${x},top=${y}`);
 });
-
-window.addEventListener('load', () => setTimeout(() => {
-  document.getElementById('intro-tease').classList.add('show');
-  document.getElementById('share').classList.add('show');
-}, 3000));
 
 var getCoords = e => {
   if (e.touches && e.touches.length) {
@@ -290,9 +285,7 @@ loader.load().then(({lowIntensity, normalIntensity}) => {
   return Promise.all(tasks);
 }).then(function() {
   document.getElementById('load_progress').classList.add('done');
-  document.getElementById('intro-cta').classList.add('show');
-  document.getElementById('intro-tease').classList.remove('show');
-  document.getElementById('share').classList.remove('show');
+  document.getElementById('cta').classList.add('show');
 
   document.addEventListener('mousedown', unlock, true);
   document.addEventListener('touchend', unlock, true);
