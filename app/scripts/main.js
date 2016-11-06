@@ -22,8 +22,9 @@ let width = document.documentElement.clientWidth,
     isMouseDown = false,
     progressBar,
     canvas = document.querySelector('canvas'),
-    landing = document.querySelector('#landing'),
     introVideo = document.querySelector('#landing video'),
+    instructions = document.getElementById('instructions'),
+    instructionsVisible = false,
     lastUpdate = Date.now(),
     audioIntensity = 0,
     audioTween = 0,
@@ -205,7 +206,16 @@ var loop = function() {
   var delta = Date.now() - lastUpdate;
   lastUpdate = Date.now();
 
-  progressBar.update(Math.min(1, video.currentTime / videoLength));
+  var currentTime = video.currentTime;
+  progressBar.update(Math.min(1, currentTime / videoLength));
+
+  if (!instructionsVisible && currentTime >= 2.75 && currentTime < 5) {
+    instructionsVisible = true;
+    instructions.classList.add('show');
+  } else if (instructionsVisible && currentTime >= 5) {
+    instructionsVisible = false;
+    instructions.classList.remove('show');
+  }
 
   if (audioTween < 0 && audioIntensity > 0) {
     audioIntensity = Math.max(0, audioIntensity - 0.002 * delta);
@@ -286,6 +296,8 @@ loader.load().then(({lowIntensity, normalIntensity}) => {
 }).then(function() {
   document.getElementById('load_progress').classList.add('done');
   document.getElementById('cta').classList.add('show');
+  instructions.classList.remove('show');
+  instructionsVisible = false;
 
   document.addEventListener('mousedown', unlock, true);
   document.addEventListener('touchend', unlock, true);

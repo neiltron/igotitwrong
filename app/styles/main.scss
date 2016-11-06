@@ -157,7 +157,7 @@ section, #renderer_container {
         transform: rotateZ(0);
       }
 
-      &:hover {
+      &:hover, .videoLoaded & {
         .play-warped {
           opacity: 1;
           transform: rotateZ(0);
@@ -173,9 +173,25 @@ section, #renderer_container {
     position: absolute;
     left: 50%;
     transform: translate3d(-50%, 0, 0);
-    bottom: 25px;
+    bottom: 6vh;
     width: 250px;
     height: auto;
+  }
+}
+
+#instructions {
+  position: absolute;
+  min-width: 300px;
+  width: 20vw;
+  height: auto;
+  left: 50%;
+  top: 50%;
+  transform: translate3d(-50%, -50%, 0);
+  opacity: 0;
+
+  &.show {
+    opacity: 1;
+    transition: opacity 0.5s linear;
   }
 }
 
@@ -186,9 +202,9 @@ section, #renderer_container {
   color: #fff;
 
   a {
-    line-height: 2vw;
-    font-size: 2vw;
-    margin: 0 1vw;
+    line-height: 20px;
+    font-size: 20px;
+    margin: 0 5px;
     text-decoration: none;
     color: #fff;
 
@@ -197,8 +213,7 @@ section, #renderer_container {
     }
 
     &.fb {
-      letter-spacing: 0.125vw;
-      font-size: 1vw;
+      font-size: 10px;
       vertical-align: top;
     }
 
