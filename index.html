@@ -16,40 +16,37 @@
 
     <link rel="stylesheet" href="styles/main.css">
 
-    <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed:300" rel="stylesheet">
-
   </head>
   <body>
-    <!--[if lt IE 10]>
-      <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
-    <![endif]-->
     <section id="landing">
       <div class="intro">
         <video muted autoplay loop webkit-playsinline playsinline></video>
-        <div id="intro-text"></div>
-        <div id="intro-tease">
-          <span>An interactive film by Ian Watt. 11/11</span>
-        </div>
-        <div id="share">
-          <span>
-            <a class="fb" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Figotitwrong.com%2F%3Ffb;src=sdkpreparse" title="Share on Facebook"><i class="fa fa-facebook-official" aria-hidden="true"></i></a>
-            <a class="spotify" href="http://open.spotify.com/artist/7GhVDVH1jcgi1M7U0kwOck" title="Listen on Spotify"><i class="fa fa-spotify" aria-hidden="true"></i></a>
-            <a class="itunes" href="https://itunes.apple.com/us/artist/could-ever/id1034974603" title="Listen on iTunes"><i class="fa fa-apple" aria-hidden="true"></i></a>
-          </span>
-        </div>
-        <div id="intro-cta">
-          <div class="arrow"></div>
-          <div class="arrow"></div>
+      </div>
+      <img class="title" src="assets/img/title.png"/>
+      <div id="cta">
+        <img class="loading" src="assets/img/loading.png"/>
+        <div class="play">
+          <i class="fa fa-play" aria-hidden="true"></i>
+          <div class="play-warped"></div>
         </div>
       </div>
+      <img class="headphones" src="assets/img/headphones.png"/>
     </section>
+
+    <div id="mini-share">
+      <span>
+        <a class="fb" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Figotitwrong.com%2F%3Ffb;src=sdkpreparse" title="Share on Facebook">SHARE</a>
+        <a class="spotify" href="http://open.spotify.com/artist/7GhVDVH1jcgi1M7U0kwOck" title="Listen on Spotify"><i class="fa fa-spotify" aria-hidden="true"></i></a>
+        <a class="itunes" href="https://itunes.apple.com/us/artist/could-ever/id1034974603" title="Listen on iTunes"><i class="fa fa-apple" aria-hidden="true"></i></a>
+      </span>
+    </div>
 
     <div class='progress' id='load_progress'></div>
 
     <div id='renderer_container'></div>
 
+    <img id="instructions" src="assets/img/instructions.png"/>
+
     <script src="scripts/main.js"></script>
-    <script src="/assets/hype/HYPE-538.thin.min.js"></script>
-    <script src="/assets/hype/intro/intro.js"></script>
   </body>
 </html>
