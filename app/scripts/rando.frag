@@ -61,7 +61,7 @@ vec4 vec4pow(vec4 v, float p) {
 vec4 applyShift(vec2 point) {
   float noise = noise2(vec3(gl_FragCoord.xy * 0.001, time * SPEED));
   vec4 shiftColor = vec4(0.0, 0.0, 0.0, 1.0);
-  vec4 shift = vec4(noise) * vec4(AMPLITUDE, AMPLITUDE, AMPLITUDE, 1.0);
+  vec4 shift = vec4(noise) * vec4(vec3(AMPLITUDE * u_intensity), 1.0);
   float distanceXY = distance(u_mousepos.xy, gl_FragCoord.xy / 2.0);
 
   float opacity = 1.0;
