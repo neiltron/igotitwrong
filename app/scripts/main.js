@@ -310,7 +310,7 @@ loader.load().then(({lowIntensity, normalIntensity}) => {
       intensity: intensity,
       blurdecay: blurdecay,
       mousepos: [mouseX, mouseY],
-      resolution: [canvas.width, canvas.height],
+      resolution: [canvas.width / window.devicePixelRatio, canvas.height / window.devicePixelRatio],
     });
   });
 });
