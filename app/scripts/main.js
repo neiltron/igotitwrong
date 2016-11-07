@@ -23,6 +23,7 @@ let width = document.documentElement.clientWidth,
     progressBar,
     canvas = document.querySelector('canvas'),
     introVideo = document.querySelector('#landing video'),
+    bumper = document.getElementById('bumper'),
     instructions = document.getElementById('instructions'),
     instructionsVisible = false,
     lastUpdate = Date.now(),
@@ -62,6 +63,8 @@ var pause = function() {
   paused = true;
   Audio.pause();
   video.pause();
+
+  bumper.classList.add('show');
 };
 
 var resume = function() {
@@ -73,6 +76,8 @@ var resume = function() {
   Audio.resume(video.currentTime);
   Audio.setIntensity(audioIntensity);
   video.play();
+
+  bumper.classList.remove('show');
 };
 
 var unlock = () => {
@@ -80,19 +85,18 @@ var unlock = () => {
     introVideo.pause();
   }
 
+  bumper.classList.remove('show');
+
   video.addEventListener('canplay', resume);
   video.addEventListener('playing', resume);
-  video.addEventListener('waiting', pause);
+  setTimeout(() => video.addEventListener('waiting', pause), 10);
   video.addEventListener('stalled', pause);
 
   Audio.start();
   video.play();
 
   var syncInterval = setInterval(() => Audio.sync(video.currentTime), 2000);
-  video.addEventListener('ended', () => {
-    clearInterval(syncInterval);
-    video.pause();
-  });
+  video.addEventListener('ended', pause);
 
   document.body.classList.add('videoLoaded');
 
@@ -117,6 +121,12 @@ var unlock = () => {
 
 var handleMouseDown = (e) => {
   e.preventDefault();
+
+  if (/repeat/i.test(e.target.className)) {
+    video.currentTime = 0;
+    resume();
+    return;
+  }
 
   if (isMobile) {
     if (document.documentElement.webkitRequestFullscreen) {

@@ -201,6 +201,10 @@ section, #renderer_container {
   bottom: 10px;
   color: #fff;
 
+  .videoLoaded & {
+    display: none;
+  }
+
   a {
     line-height: 20px;
     font-size: 20px;
@@ -219,6 +223,74 @@ section, #renderer_container {
 
     i {
       pointer-events: none;
+    }
+  }
+}
+
+#bumper {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  pointer-events: none;
+
+  &.show {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .bumper-inner {
+    width: 91px;
+  }
+
+  a {
+    text-underline: none;
+    color: #fff;
+    &:hover {
+      color: #bbb;
+    }
+  }
+
+  .fb, .repeat {
+    margin: 20px 0;
+  }
+
+  .fb {
+    display: block;
+    width: 100%;
+    &:hover {
+      opacity: 0.75;
+    }
+
+    img {
+      width: 100%;
+      height: auto;
+    }
+  }
+
+  .share-icons {
+    color: #fff;
+    font-size: 40px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .repeat {
+    cursor: pointer;
+    width: 100%;
+    height: auto;
+    transform: rotateZ(0);
+    transition: transform 0.25s ease;
+
+    &:hover {
+      transform: rotateZ(-90deg);
     }
   }
 }
