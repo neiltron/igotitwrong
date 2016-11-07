@@ -20,6 +20,7 @@ let width = document.documentElement.clientWidth,
     lastMouseX = 0,
     lastMouseY = 0,
     isMouseDown = false,
+    mouseDownTime = Date.now(),
     progressBar,
     canvas = document.querySelector('canvas'),
     introVideo = document.querySelector('#landing video'),
@@ -121,6 +122,7 @@ var unlock = () => {
 
 var handleMouseDown = (e) => {
   e.preventDefault();
+  mouseDownTime = Date.now();
 
   if (/repeat/i.test(e.target.className)) {
     video.currentTime = 0;
@@ -160,6 +162,14 @@ var setMousePosition = (e) => {
 var handleMouseUp = () => {
   isMouseDown = false;
   audioTween = -1;
+
+  if (Date.now() - mouseDownTime < 100) {
+    if (paused) {
+      resume();
+    } else {
+      pause();
+    }
+  }
 };
 
 var handleMouseMove = (e) => {
