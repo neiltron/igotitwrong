@@ -29,6 +29,7 @@ let width = document.documentElement.clientWidth,
     lastUpdate = Date.now(),
     audioIntensity = 0,
     audioTween = 0,
+    pageviewTime = Date.now(),
     isMobile = ('ontouchstart' in window);
 
 introVideo.src = 'assets/intro' + (isMobile ? '_mobile' : '') + '.mp4';
@@ -81,6 +82,8 @@ var pause = function() {
 
   document.body.classList.remove('playing');
 
+  ga('send', 'event', 'video', 'pause', '', video.currentTime);
+
   paused = true;
   Audio.pause();
   video.pause();
@@ -95,6 +98,8 @@ var resume = function() {
 
   document.body.classList.add('playing');
 
+  ga('send', 'event', 'video', 'resume');
+
   paused = false;
   Audio.resume(video.currentTime);
   Audio.setIntensity(audioIntensity);
@@ -107,6 +112,8 @@ var unlock = () => {
   if (introVideo) {
     introVideo.pause();
   }
+
+  ga('send', 'event', 'video', 'play');
 
   bumper.classList.remove('show');
 
@@ -153,6 +160,8 @@ var handleMouseDown = (e) => {
   e.preventDefault();
 
   if (/repeat/i.test(e.target.className)) {
+    ga('send', 'event', 'video', 'replay');
+
     video.currentTime = 0;
     resume();
     return;
@@ -333,6 +342,8 @@ loader.load().then(({lowIntensity, normalIntensity}) => {
 
   return Promise.all(tasks);
 }).then(function() {
+  ga('send', 'event', 'website', 'loaded', '', Date.now() - pageviewTime);
+
   document.getElementById('load_progress').classList.add('done');
   document.getElementById('cta').classList.add('show');
   instructions.classList.remove('show');
