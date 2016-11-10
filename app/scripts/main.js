@@ -309,7 +309,7 @@ loader.load().then(({lowIntensity, normalIntensity}) => {
     video.onerror = reject;
   }));
 
-  video.src = 'assets/video' + (isMobile ? '_mobile' : '') + '.mp4';
+  video.src = 'assets/video_mobile.mp4';
   video.load();
 
   return Promise.all(tasks);
