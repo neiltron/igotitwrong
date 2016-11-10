@@ -209,6 +209,48 @@ section, #renderer_container {
   }
 }
 
+#playback {
+  position: absolute;
+  left: 20px;
+  bottom: 20px;
+  width: 20px;
+  height: 20px;
+  opacity: 0;
+  cursor: pointer;
+
+  .videoLoaded & {
+    opacity: 1;
+  }
+
+  &, .icon {
+    transition: opacity 0.25s ease;
+  }
+
+  .icon {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 20px;
+    height: auto;
+  }
+
+  .pause {
+    opacity: 0;
+
+    .playing & {
+      opacity: 1;
+    }
+  }
+
+  .play {
+    opacity: 1;
+
+    .playing & {
+      opacity: 0;
+    }
+  }
+}
+
 #bumper {
   position: absolute;
   top: 0;

@@ -20,7 +20,6 @@ let width = document.documentElement.clientWidth,
     lastMouseX = 0,
     lastMouseY = 0,
     isMouseDown = false,
-    mouseDownTime = Date.now(),
     progressBar,
     canvas = document.querySelector('canvas'),
     introVideo = document.querySelector('#landing video'),
@@ -33,6 +32,15 @@ let width = document.documentElement.clientWidth,
     isMobile = ('ontouchstart' in window);
 
 introVideo.src = 'assets/intro' + (isMobile ? '_mobile' : '') + '.mp4';
+
+document.querySelector('#playback').addEventListener('click', e => {
+  e.preventDefault();
+  if (paused) {
+    resume();
+  } else {
+    pause();
+  }
+});
 
 document.querySelector('a.fb').addEventListener('click', e => {
   if (isMobile) {
@@ -61,6 +69,8 @@ var pause = function() {
     return;
   }
 
+  document.body.classList.remove('playing');
+
   paused = true;
   Audio.pause();
   video.pause();
@@ -72,6 +82,8 @@ var resume = function() {
   if (!paused) {
     return;
   }
+
+  document.body.classList.add('playing');
 
   paused = false;
   Audio.resume(video.currentTime);
@@ -100,6 +112,7 @@ var unlock = () => {
   video.addEventListener('ended', pause);
 
   document.body.classList.add('videoLoaded');
+  document.body.classList.add('playing');
 
   document.removeEventListener('touchend', unlock, true);
   document.removeEventListener('mousedown', unlock, true);
@@ -122,7 +135,6 @@ var unlock = () => {
 
 var handleMouseDown = (e) => {
   e.preventDefault();
-  mouseDownTime = Date.now();
 
   if (/repeat/i.test(e.target.className)) {
     video.currentTime = 0;
@@ -162,14 +174,6 @@ var setMousePosition = (e) => {
 var handleMouseUp = () => {
   isMouseDown = false;
   audioTween = -1;
-
-  if (Date.now() - mouseDownTime < 100) {
-    if (paused) {
-      resume();
-    } else {
-      pause();
-    }
-  }
 };
 
 var handleMouseMove = (e) => {
