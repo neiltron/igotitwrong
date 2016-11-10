@@ -96,6 +96,7 @@ section, #renderer_container {
   }
 
   .title {
+    margin-top: 10vw;
     width: 60vw;
     min-width: 320px;
     height: auto;
@@ -105,7 +106,7 @@ section, #renderer_container {
     display: flex;
     justify-content: center;
     align-items: center;
-    bottom: 50px;
+    bottom: 40vw;
     height: 25vh;
 
     &.show {
