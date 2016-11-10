@@ -33,6 +33,16 @@ let width = document.documentElement.clientWidth,
 
 introVideo.src = 'assets/intro' + (isMobile ? '_mobile' : '') + '.mp4';
 
+document.getElementById('fullscreen').addEventListener('click', e => {
+  e.preventDefault();
+  if (!document.webkitFullscreenElement) {
+    enterFullscreen();
+  } else {
+    document.webkitCancelFullScreen(document.webkitFullscreenElement);
+  }
+});
+document.querySelector('#fullscreen').addEventListener('click', enterFullscreen);
+
 document.querySelector('#playback').addEventListener('click', e => {
   e.preventDefault();
   if (paused) {
@@ -133,6 +143,12 @@ var unlock = () => {
   loop();
 };
 
+var enterFullscreen = () => {
+  if (document.documentElement.webkitRequestFullscreen) {
+    document.documentElement.webkitRequestFullscreen();
+  }
+};
+
 var handleMouseDown = (e) => {
   e.preventDefault();
 
@@ -143,9 +159,7 @@ var handleMouseDown = (e) => {
   }
 
   if (isMobile) {
-    if (document.documentElement.webkitRequestFullscreen) {
-      document.documentElement.webkitRequestFullscreen();
-    }
+    enterFullscreen();
 
     if (screen.orientation && screen.orientation.lock) {
       screen.orientation.lock('landscape');

@@ -251,6 +251,24 @@ section, #renderer_container {
   }
 }
 
+#fullscreen {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  cursor: pointer;
+
+  img {
+    width: 25px;
+    height: auto;
+    opacity: 1;
+    transition: opacity 0.25s ease;
+
+    &:hover {
+      opacity: 0.5;
+    }
+  }
+}
+
 #bumper {
   position: absolute;
   top: 0;
