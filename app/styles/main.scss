@@ -106,7 +106,6 @@ section, #renderer_container {
     display: flex;
     justify-content: center;
     align-items: center;
-    bottom: 40vw;
     height: 25vh;
 
     &.show {
@@ -125,6 +124,7 @@ section, #renderer_container {
     }
 
     .play {
+      margin-bottom: 5vw;
       display: none;
       min-width: 50px;
       width: 5vw;
@@ -157,6 +157,7 @@ section, #renderer_container {
   top: 50%;
   transform: translate3d(-50%, -50%, 0);
   opacity: 0;
+  pointer-events: none;
 
   &.show {
     opacity: 1;
@@ -257,6 +258,11 @@ section, #renderer_container {
   top: 20px;
   right: 20px;
   cursor: pointer;
+  display: none;
+
+  .videoLoaded & {
+    display: block;
+  }
 
   img {
     width: 25px;

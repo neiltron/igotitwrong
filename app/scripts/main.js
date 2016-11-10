@@ -157,7 +157,6 @@ var enterFullscreen = () => {
 };
 
 var handleMouseDown = (e) => {
-  e.preventDefault();
 
   if (/repeat/i.test(e.target.className)) {
     ga('send', 'event', 'video', 'replay');
