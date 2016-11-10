@@ -274,6 +274,7 @@ const drawCanvas = regl({
     u_resolution: regl.prop('resolution'),
     u_blurdecay: regl.prop('blurdecay'),
     u_mousepos: regl.prop('mousepos'),
+    u_ismobile: isMobile,
   }
 })
 

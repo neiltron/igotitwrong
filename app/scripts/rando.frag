@@ -10,6 +10,7 @@ uniform vec2 u_resolution;
 uniform float u_intensity;
 uniform float u_blurdecay;
 uniform vec2 u_mousepos;
+uniform bool u_ismobile;
 varying vec2 vTextureCoord;
 
 #pragma glslify: noise2 = require("glsl-noise/classic/3d")
@@ -87,7 +88,9 @@ void main() {
   color.rgb = mix(color.rgb, vec3(0.2126*color.r + 0.7152*color.g + 0.0722*color.b), u_intensity);
 
   // RGB Shift
-  color.rgb = mix(color.rgb, applyShift(vTextureCoord).rgb, 0.25);
+  if (u_ismobile == false) {
+    color.rgb = mix(color.rgb, applyShift(vTextureCoord).rgb, 0.25);
+  }
 
   gl_FragColor = color;
 }
