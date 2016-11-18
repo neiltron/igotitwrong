@@ -31,7 +31,7 @@ let width = document.documentElement.clientWidth,
     audioTween = 0,
     pageviewTime = Date.now(),
     isMobile = ('ontouchstart' in window),
-    isIOS = /iphone|ipad/i.test(navigator.userAgent);
+    isIOS = isMobile && /iphone|ipad/i.test(navigator.userAgent);
 
 introVideo.src = 'assets/intro' + (isMobile ? '_mobile' : '') + '.mp4';
 
