@@ -2,7 +2,7 @@
 #define AMPLITUDE 0.2
 #define SPEED 1.0
 
-precision mediump float;
+precision highp float;
 
 uniform sampler2D texture;
 uniform float time;

@@ -30,7 +30,8 @@ let width = document.documentElement.clientWidth,
     audioIntensity = 0,
     audioTween = 0,
     pageviewTime = Date.now(),
-    isMobile = ('ontouchstart' in window);
+    isMobile = ('ontouchstart' in window),
+    isIOS = /iphone|ipad/i.test(navigator.userAgent);
 
 introVideo.src = 'assets/intro' + (isMobile ? '_mobile' : '') + '.mp4';
 
@@ -281,7 +282,7 @@ var loop = function() {
 };
 
 const drawCanvas = regl({
-  frag: glslify('./rando.frag'),
+  frag: isIOS ? glslify('./rando-ios.frag') : glslify('./rando.frag'),
   vert: glslify('./rando.vert'),
   count: 3,
 
